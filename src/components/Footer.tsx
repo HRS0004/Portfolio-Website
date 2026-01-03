@@ -8,7 +8,7 @@ export default function Footer() {
 
     useEffect(() => {
         // Dynamically import anime.js
-        import('https://esm.sh/animejs').then((anime) => {
+        import('animejs').then((anime) => {
             const { animate, createTimeline, createTimer, stagger, utils } = anime
 
             const creatureEl = creatureRef.current
