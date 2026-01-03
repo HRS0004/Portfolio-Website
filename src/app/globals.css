@@ -8,7 +8,7 @@
     --foreground: #ffffff;
     --primary: #3b82f6;
     --secondary: #06b6d4;
-    --grid-color: rgba(128, 128, 128, 0.08);
+    --grid-color: rgba(128, 128, 128, 0.03);
   }
 
   body {
@@ -17,12 +17,13 @@
   }
 }
 
-/* Technical grid - reduced opacity for calm */
+/* Technical grid - much softer for calm feel */
 .technical-grid {
   background-image:
     linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
     linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
-  background-size: 50px 50px;
+  background-size: 60px 60px;
+  opacity: 0.4;
 }
 
 /* Custom scrollbar */
@@ -89,11 +90,11 @@
 
 /* Gradient overlays - subtle */
 .gradient-overlay-blue {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, transparent 100%);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.03) 0%, transparent 100%);
 }
 
 .gradient-overlay-cyan {
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.05) 0%, transparent 100%);
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.03) 0%, transparent 100%);
 }
 
 /* Section spacing consistency */
