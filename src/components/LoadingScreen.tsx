@@ -8,8 +8,8 @@ export default function LoadingScreen() {
     const [progress, setProgress] = useState(0)
 
     useEffect(() => {
-        // Simulate loading progress
-        const duration = 2000 // 2 seconds
+        // Simulate loading progress - FAST (1 second)
+        const duration = 1000 // 1 second for quick access
         const interval = 20
         const steps = duration / interval
         let currentStep = 0
@@ -21,7 +21,7 @@ export default function LoadingScreen() {
 
             if (currentStep >= steps) {
                 clearInterval(timer)
-                setTimeout(() => setIsLoading(false), 200)
+                setTimeout(() => setIsLoading(false), 100)
             }
         }, interval)
 
