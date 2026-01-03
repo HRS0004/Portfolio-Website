@@ -1,13 +1,37 @@
 'use client'
 
 import { Github, Linkedin, Mail } from 'lucide-react'
+import { useEffect, useRef } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 
 export default function Footer() {
+    const sectionRef = useRef<HTMLElement>(null)
+    const contentRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        gsap.registerPlugin(ScrollTrigger)
+
+        // Footer content fade in
+        gsap.fromTo(contentRef.current,
+            { opacity: 0, y: 40 },
+            {\n                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: 'power2.out',
+                scrollTrigger: {\n                    trigger: contentRef.current,
+                    start: 'top 85%',
+                    once: true
+                }
+            }
+        )
+    }, [])
+
     return (
-        <footer className="py-20 relative border-t border-system-border" data-testid="footer">
+        <footer ref={sectionRef} className="py-20 relative border-t border-system-border" data-testid="footer">
             <div className="absolute inset-0 grid-texture opacity-20"></div>
             
-            <div className="section-container relative z-10">
+            <div className="section-container relative z-10" ref={contentRef} style={{ opacity: 0 }}>
                 {/* Top Section */}
                 <div className="grid lg:grid-cols-2 gap-16 mb-20">
                     {/* Left - CTA */}
@@ -22,14 +46,14 @@ export default function Footer() {
                         <div className="flex flex-col sm:flex-row gap-4 pt-6">
                             <a
                                 href="#"
-                                className="inline-flex items-center justify-center px-8 py-4 bg-white text-black font-sans font-medium uppercase tracking-wider text-sm hover:bg-white/90 transition-all duration-300"
+                                className="inline-flex items-center justify-center px-8 py-4 bg-white text-black font-sans font-medium uppercase tracking-wider text-sm hover:bg-white/90 hover:translate-y-[-2px] hover:shadow-[0_4px_20px_rgba(255,255,255,0.2)] transition-all duration-300"
                                 data-testid="download-resume-btn"
                             >
                                 Download Resume
                             </a>
                             <a
                                 href="#"
-                                className="inline-flex items-center justify-center px-8 py-4 border border-system-border text-system-text font-sans font-medium uppercase tracking-wider text-sm hover:border-white/30 transition-all duration-300"
+                                className="inline-flex items-center justify-center px-8 py-4 border border-system-border text-system-text font-sans font-medium uppercase tracking-wider text-sm hover:border-white/30 hover:translate-y-[-2px] transition-all duration-300"
                                 data-testid="schedule-call-btn"
                             >
                                 Schedule Call
@@ -61,7 +85,7 @@ export default function Footer() {
                                     href="https://github.com"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-system-muted hover:text-system-text transition-colors duration-300"
+                                    className="text-system-muted hover:text-system-text hover:translate-y-[-2px] transition-all duration-300"
                                     data-testid="github-link"
                                 >
                                     <Github size={20} />
@@ -70,7 +94,7 @@ export default function Footer() {
                                     href="https://linkedin.com"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-system-muted hover:text-system-text transition-colors duration-300"
+                                    className="text-system-muted hover:text-system-text hover:translate-y-[-2px] transition-all duration-300"
                                     data-testid="linkedin-link"
                                 >
                                     <Linkedin size={20} />
