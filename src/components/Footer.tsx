@@ -7,112 +7,161 @@ export default function Footer() {
     const creatureRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        // Dynamically import anime.js
-        import('animejs').then((anime) => {
-            const { animate, createTimeline, createTimer, stagger, utils } = anime
-
+        import('animejs').then((animeModule) => {
+            const anime = animeModule.default || animeModule
+            
             const creatureEl = creatureRef.current
             if (!creatureEl) return
 
-            const viewport = { w: window.innerWidth * .5, h: window.innerHeight * .5 }
+            const viewport = { w: window.innerWidth * 0.5, h: window.innerHeight * 0.5 }
             const cursor = { x: 0, y: 0 }
             const rows = 13
-            const grid = [rows, rows]
+            const grid: [number, number] = [rows, rows]
             const from = 'center'
-            const scaleStagger = stagger([2, 5], { ease: 'inQuad', grid, from })
-            const opacityStagger = stagger([1, .1], { grid, from })
+
+            // Clear any existing children
+            creatureEl.innerHTML = ''
 
             // Create particles
             for (let i = 0; i < (rows * rows); i++) {
-                creatureEl.appendChild(document.createElement('div'))
+                const div = document.createElement('div')
+                div.style.transformStyle = 'preserve-3d'
+                div.style.position = 'relative'
+                div.style.width = '4em'
+                div.style.height = '4em'
+                div.style.margin = '3em'
+                div.style.borderRadius = '2em'
+                div.style.willChange = 'transform'
+                div.style.mixBlendMode = 'screen'
+                creatureEl.appendChild(div)
             }
 
-            const particuleEls = creatureEl.querySelectorAll('div')
+            const particleEls = Array.from(creatureEl.querySelectorAll('div'))
 
-            utils.set(creatureEl, {
-                width: rows * 10 + 'em',
-                height: rows * 10 + 'em'
-            })
+            // Set initial styles
+            creatureEl.style.width = rows * 10 + 'em'
+            creatureEl.style.height = rows * 10 + 'em'
 
-            utils.set(particuleEls, {
-                x: 0,
-                y: 0,
-                scale: scaleStagger,
-                opacity: opacityStagger,
-                background: stagger([80, 20], {
-                    grid, from,
-                    modifier: (v: number) => `hsl(210, 100%, ${v}%)`, // Blue hue
-                }),
-                boxShadow: stagger([8, 1], {
-                    grid, from,
-                    modifier: (v: number) => `0px 0px ${utils.round(v, 0)}em 0px hsl(210, 100%, 60%)`,
-                }),
-                zIndex: stagger([rows * rows, 1], { grid, from, modifier: utils.round(0) }),
+            // Initialize particles with stagger
+            particleEls.forEach((el, i) => {
+                const row = Math.floor(i / rows)
+                const col = i % rows
+                const centerRow = (rows - 1) / 2
+                const centerCol = (rows - 1) / 2
+                const distanceFromCenter = Math.sqrt(
+                    Math.pow(row - centerRow, 2) + Math.pow(col - centerCol, 2)
+                )
+                const maxDistance = Math.sqrt(Math.pow(centerRow, 2) + Math.pow(centerCol, 2))
+                const normalizedDistance = distanceFromCenter / maxDistance
+
+                const scale = 2 + (5 - 2) * (1 - normalizedDistance)
+                const opacity = 1 - (0.9 * normalizedDistance)
+                const lightness = 80 - (60 * normalizedDistance)
+                const shadowSize = 8 - (7 * normalizedDistance)
+
+                anime.set(el, {
+                    translateX: 0,
+                    translateY: 0,
+                    scale: scale,
+                    opacity: opacity,
+                    background: `hsl(210, 100%, ${lightness}%)`,
+                    boxShadow: `0px 0px ${shadowSize}em 0px hsl(210, 100%, 60%)`,
+                    zIndex: Math.round(rows * rows - i)
+                })
             })
 
             const pulse = () => {
-                animate(particuleEls, {
-                    keyframes: [
-                        {
-                            scale: 5,
-                            opacity: 1,
-                            delay: stagger(90, { start: 1650, grid, from }),
-                            duration: 150,
-                        }, {
-                            scale: scaleStagger,
-                            opacity: opacityStagger,
-                            ease: 'inOutQuad',
-                            duration: 600
-                        }
+                anime({
+                    targets: particleEls,
+                    scale: [
+                        { value: 5, duration: 150 },
+                        { value: (el: any, i: number) => {
+                            const row = Math.floor(i / rows)
+                            const col = i % rows
+                            const centerRow = (rows - 1) / 2
+                            const centerCol = (rows - 1) / 2
+                            const distanceFromCenter = Math.sqrt(
+                                Math.pow(row - centerRow, 2) + Math.pow(col - centerCol, 2)
+                            )
+                            const maxDistance = Math.sqrt(Math.pow(centerRow, 2) + Math.pow(centerCol, 2))
+                            const normalizedDistance = distanceFromCenter / maxDistance
+                            return 2 + (5 - 2) * (1 - normalizedDistance)
+                        }, duration: 600 }
                     ],
+                    opacity: [
+                        { value: 1, duration: 150 },
+                        { value: (el: any, i: number) => {
+                            const row = Math.floor(i / rows)
+                            const col = i % rows
+                            const centerRow = (rows - 1) / 2
+                            const centerCol = (rows - 1) / 2
+                            const distanceFromCenter = Math.sqrt(
+                                Math.pow(row - centerRow, 2) + Math.pow(col - centerCol, 2)
+                            )
+                            const maxDistance = Math.sqrt(Math.pow(centerRow, 2) + Math.pow(centerCol, 2))
+                            const normalizedDistance = distanceFromCenter / maxDistance
+                            return 1 - (0.9 * normalizedDistance)
+                        }, duration: 600 }
+                    ],
+                    delay: anime.stagger(90, { start: 1650, grid, from }),
+                    easing: 'easeInOutQuad'
                 })
             }
 
-            const mainLoop = createTimer({
-                frameRate: 15,
-                onUpdate: () => {
-                    animate(particuleEls, {
-                        x: cursor.x,
-                        y: cursor.y,
-                        delay: stagger(40, { grid, from }),
-                        duration: stagger(120, { start: 750, ease: 'inQuad', grid, from }),
-                        ease: 'inOut',
-                        composition: 'blend',
-                    })
-                }
+            let animationFrameId: number
+
+            const mainLoop = () => {
+                anime({
+                    targets: particleEls,
+                    translateX: cursor.x,
+                    translateY: cursor.y,
+                    delay: anime.stagger(40, { grid, from }),
+                    duration: anime.stagger(120, { start: 750, easing: 'easeInQuad', grid, from }),
+                    easing: 'easeInOut',
+                    complete: () => {
+                        animationFrameId = requestAnimationFrame(mainLoop)
+                    }
+                })
+            }
+
+            // Auto movement
+            let autoMoveX = anime({
+                targets: cursor,
+                x: [-viewport.w * 0.45, viewport.w * 0.45],
+                duration: 3000,
+                easing: 'easeInOutExpo',
+                direction: 'alternate',
+                loop: true,
+                begin: pulse,
+                loopBegin: pulse
             })
 
-            const autoMove = createTimeline()
-                .add(cursor, {
-                    x: [-viewport.w * .45, viewport.w * .45],
-                    modifier: (x: number) => x + Math.sin(mainLoop.currentTime * .0007) * viewport.w * .5,
-                    duration: 3000,
-                    ease: 'inOutExpo',
-                    alternate: true,
-                    loop: true,
-                    onBegin: pulse,
-                    onLoop: pulse,
-                }, 0)
-                .add(cursor, {
-                    y: [-viewport.h * .45, viewport.h * .45],
-                    modifier: (y: number) => y + Math.cos(mainLoop.currentTime * .00012) * viewport.h * .5,
-                    duration: 1000,
-                    ease: 'inOutQuad',
-                    alternate: true,
-                    loop: true,
-                }, 0)
-
-            const manualMovementTimeout = createTimer({
-                duration: 1500,
-                onComplete: () => autoMove.play(),
+            let autoMoveY = anime({
+                targets: cursor,
+                y: [-viewport.h * 0.45, viewport.h * 0.45],
+                duration: 1000,
+                easing: 'easeInOutQuad',
+                direction: 'alternate',
+                loop: true
             })
+
+            mainLoop()
+
+            let manualTimeout: NodeJS.Timeout
 
             const followPointer = (e: MouseEvent | TouchEvent) => {
                 const event = e.type === 'touchmove' ? (e as TouchEvent).touches[0] : e as MouseEvent
                 cursor.x = event.pageX - viewport.w
                 cursor.y = event.pageY - viewport.h
-                autoMove.pause()
-                manualMovementTimeout.restart()
+                
+                autoMoveX.pause()
+                autoMoveY.pause()
+                
+                clearTimeout(manualTimeout)
+                manualTimeout = setTimeout(() => {
+                    autoMoveX.play()
+                    autoMoveY.play()
+                }, 1500)
             }
 
             document.addEventListener('mousemove', followPointer)
@@ -121,6 +170,8 @@ export default function Footer() {
             return () => {
                 document.removeEventListener('mousemove', followPointer)
                 document.removeEventListener('touchmove', followPointer)
+                cancelAnimationFrame(animationFrameId)
+                clearTimeout(manualTimeout)
             }
         })
     }, [])
@@ -226,26 +277,17 @@ export default function Footer() {
                     width: 100%;
                     height: 100%;
                     pointer-events: none;
-                    opacity: 0.3;
+                    opacity: 0.5;
+                    z-index: 1;
                 }
                 .creature {
-                    font-size: .2vh;
+                    font-size: 0.2vh;
                     display: flex;
                     justify-content: center;
                     align-items: center;
                     width: 150em;
                     height: 150em;
                     flex-wrap: wrap;
-                }
-                .creature div {
-                    transform-style: preserve-3d;
-                    position: relative;
-                    width: 4em;
-                    height: 4em;
-                    margin: 3em;
-                    border-radius: 2em;
-                    will-change: transform;
-                    mix-blend-mode: plus-lighter;
                 }
             `}</style>
         </footer>
