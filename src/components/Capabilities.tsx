@@ -1,97 +1,75 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
-import { Box, Gauge, Layers, Cpu } from 'lucide-react'
 
 const capabilities = [
-    {
-        icon: Box,
-        title: 'Web-based 3D',
-        metric: 'React Three Fiber · GLSL · WebGL',
-    },
-    {
-        icon: Gauge,
-        title: 'Performance',
-        metric: '40-60% Faster · GPU Optimization',
-    },
-    {
-        icon: Layers,
-        title: 'Industrial Viz',
-        metric: 'CAD Integration · Product Tours',
-    },
-    {
-        icon: Cpu,
-        title: 'Scroll Animation',
-        metric: 'GSAP · Framer Motion · Smooth UX',
-    },
+    { name: 'Web-based 3D', desc: 'React Three Fiber · GLSL Shaders' },
+    { name: 'Performance Optimization', desc: 'Load Time & GPU Efficiency' },
+    { name: 'Industrial Visualization', desc: 'CAD Integration · Product Tours' },
+    { name: 'Scroll Animation', desc: 'GSAP · Smooth Interactions' },
 ]
 
 export default function Capabilities() {
-    const containerRef = useRef<HTMLDivElement>(null)
+    const sectionRef = useRef<HTMLElement>(null)
 
     useEffect(() => {
-        gsap.registerPlugin(ScrollTrigger)
-
-        const cards = gsap.utils.toArray('.capability-card')
-        gsap.fromTo(
-            cards,
-            { opacity: 0, y: 40 },
-            {
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                stagger: 0.1,
-                ease: 'power3.out',
-                scrollTrigger: {
-                    trigger: containerRef.current,
-                    start: 'top 80%',
-                },
-            }
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.querySelectorAll('.stagger-item').forEach((el, index) => {
+                            setTimeout(() => {
+                                el.classList.add('animate-fade-up')
+                            }, index * 100)
+                        })
+                    }
+                })
+            },
+            { threshold: 0.1 }
         )
+
+        if (sectionRef.current) {
+                    observer.observe(sectionRef.current)
+        }
+
+        return () => observer.disconnect()
     }, [])
 
     return (
-        <section
-            className="py-20 px-6 lg:px-24 bg-gradient-overlay-blue"
-            ref={containerRef}
+        <section 
+            ref={sectionRef}
+            className="py-32 relative border-t border-system-border" 
             data-testid="capabilities-section"
         >
-            <div className="max-w-7xl mx-auto">
-                {/* Header */}
-                <div className="mb-12 text-center">
-                    <h2 className="text-3xl lg:text-5xl font-bold uppercase mb-4">Core Capabilities</h2>
-                    <p className="text-lg text-neutral-400">What I specialize in</p>
+            <div className="absolute inset-0 grid-texture opacity-20"></div>
+            
+            <div className="section-container relative z-10">
+                {/* Section Label */}
+                <div className="stagger-item checkpoint-label mb-4 opacity-0 text-accent-purple">
+                    SPECIALIZATIONS
                 </div>
 
-                {/* Capability Cards - Compact Grid */}
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {capabilities.map((capability, index) => {
-                        const Icon = capability.icon
-                        return (
-                            <div
-                                key={index}
-                                className="capability-card group card-base p-6 text-center hover:border-primary/40 transition-all duration-300"
-                                data-testid={`capability-card-${index}`}
-                            >
-                                {/* Icon */}
-                                <div className="mb-4 inline-flex p-4 border-2 border-primary/30 bg-primary/5 rounded-lg group-hover:border-primary/60 group-hover:bg-primary/10 transition-all duration-300">
-                                    <Icon className="w-8 h-8 text-primary" />
-                                </div>
+                {/* Section Title */}
+                <h2 className="stagger-item text-display-md mb-20 opacity-0">
+                    Core Focus Areas
+                </h2>
 
-                                {/* Title */}
-                                <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors duration-300">
-                                    {capability.title}
-                                </h3>
-
-                                {/* Metric */}
-                                <p className="text-xs font-mono text-secondary leading-relaxed">
-                                    {capability.metric}
-                                </p>
-                            </div>
-                        )
-                    })}
+                {/* Capabilities Grid */}
+                <div className="grid md:grid-cols-2 gap-8">
+                    {capabilities.map((capability, index) => (
+                        <div
+                            key={index}
+                            className="stagger-item opacity-0 p-8 border border-system-border bg-system-surface/20 hover:border-accent-purple/30 transition-colors duration-500"
+                            data-testid={`capability-${index}`}
+                        >
+                            <h3 className="text-2xl font-display font-bold mb-3">
+                                {capability.name}
+                            </h3>
+                            <p className="text-sm text-system-muted font-mono">
+                                {capability.desc}
+                            </p>
+                        </div>
+                    ))}
                 </div>
             </div>
         </section>
