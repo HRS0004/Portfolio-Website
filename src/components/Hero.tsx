@@ -1,78 +1,92 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import gsap from 'gsap'
 
 export default function Hero() {
-    const titleRef = useRef<HTMLHeadingElement>(null)
-    const roleRef = useRef<HTMLHeadingElement>(null)
-    const descRef = useRef<HTMLParagraphElement>(null)
+    const nameRef = useRef<HTMLDivElement>(null)
+    const statusRef = useRef<HTMLDivElement>(null)
+    const metricRef = useRef<HTMLDivElement>(null)
+    const ctaRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
-
-        // Staggered word reveal for name
-        if (titleRef.current) {
-            const words = titleRef.current.querySelectorAll('.word')
-            tl.fromTo(
-                words,
-                { opacity: 0, y: 40 },
-                {
-                    opacity: 1,
-                    y: 0,
-                    duration: 1,
-                    stagger: 0.15,
-                }
-            )
-        }
-
-        // Role reveal
-        tl.fromTo(
-            roleRef.current,
-            { opacity: 0, y: 30 },
-            { opacity: 1, y: 0, duration: 1.2 },
-            '-=0.6'
-        )
-
-        // Description reveal
-        tl.fromTo(
-            descRef.current,
-            { opacity: 0, y: 20 },
-            { opacity: 1, y: 0, duration: 1 },
-            '-=0.8'
-        )
+        const elements = [nameRef, statusRef, metricRef, ctaRef]
+        
+        elements.forEach((ref, index) => {
+            if (ref.current) {
+                setTimeout(() => {
+                    ref.current?.classList.add('animate-fade-up')
+                }, index * 150)
+            }
+        })
     }, [])
 
     return (
-        <section className="min-h-screen flex flex-col justify-center px-6 lg:px-24 py-32" data-testid="hero-section">
-            <div className="max-w-6xl mx-auto text-center">
-                {/* Name - Clean & Bold */}
-                <h1
-                    ref={titleRef}
-                    className="text-7xl md:text-8xl lg:text-9xl font-bold mb-12 text-white uppercase leading-none tracking-tight"
+        <section className="min-h-screen flex flex-col justify-center relative overflow-hidden" data-testid="hero-section">
+            {/* Subtle grid texture */}
+            <div className="absolute inset-0 grid-texture opacity-40"></div>
+            
+            <div className="section-container relative z-10">
+                {/* Checkpoint Label */}
+                <div className="checkpoint-label mb-8 opacity-0" ref={nameRef}>
+                    SYSTEM_CHECKPOINT_2024
+                </div>
+
+                {/* Name - Geometric Display */}
+                <h1 
+                    className="text-display-xl text-system-text mb-6 opacity-0"
+                    style={{ animationDelay: '150ms' }}
+                    ref={statusRef}
                     data-testid="hero-name"
                 >
-                    <span className="word inline-block mr-6 opacity-0">Hrishikesh</span>
-                    <span className="word inline-block opacity-0">Supe</span>
+                    HRISHIKESH<br />SUPE
                 </h1>
 
-                {/* Role - Clear Hierarchy */}
-                <h2
-                    ref={roleRef}
-                    className="text-3xl md:text-4xl lg:text-5xl font-semibold text-primary mb-8 opacity-0"
-                    data-testid="hero-role"
+                {/* Status Line - Single Accent */}
+                <div 
+                    className="flex items-center gap-4 mb-12 opacity-0"
+                    style={{ animationDelay: '300ms' }}
+                    ref={metricRef}
                 >
-                    Frontend + 3D Web Specialist
-                </h2>
+                    <div className="h-px w-12 bg-accent-blue"></div>
+                    <p className="text-xl lg:text-2xl text-system-muted font-sans">
+                        Frontend Developer specializing in{' '}
+                        <span className="text-accent-blue font-semibold">3D Web & Performance</span>
+                    </p>
+                </div>
 
-                {/* Description - Calm & Concise */}
-                <p
-                    ref={descRef}
-                    className="text-xl md:text-2xl text-neutral-400 max-w-4xl mx-auto font-light leading-relaxed opacity-0"
-                    data-testid="hero-description"
+                {/* Primary Metric - System Readout */}
+                <div 
+                    className="mb-16 opacity-0"
+                    style={{ animationDelay: '450ms' }}
+                    ref={ctaRef}
                 >
-                    I build performant 3D web experiences with React, Three.js & performance optimization.
-                </p>
+                    <div className="inline-flex items-baseline gap-4 p-6 border border-system-border bg-system-surface/50">
+                        <div className="metric-display text-accent-blue">
+                            60
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-sm text-system-text font-medium">FPS</span>
+                            <span className="text-xs text-system-muted">3D Rendering Performance</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Single CTA */}
+                <div className="opacity-0" style={{ animationDelay: '600ms' }}>
+                    <a
+                        href="#"
+                        className="inline-flex items-center gap-3 px-8 py-4 bg-accent-blue text-white font-sans font-medium uppercase tracking-wider text-sm hover:bg-accent-blue/90 transition-all duration-300"
+                        data-testid="hero-cta"
+                    >
+                        View Full Report
+                    </a>
+                </div>
+
+                {/* Minimal status indicator */}
+                <div className="mt-24 flex items-center gap-3 opacity-0" style={{ animationDelay: '750ms' }}>
+                    <div className="w-2 h-2 bg-accent-blue rounded-full animate-pulse"></div>
+                    <span className="checkpoint-label">Available for opportunities</span>
+                </div>
             </div>
         </section>
     )
