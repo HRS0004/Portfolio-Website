@@ -1,5 +1,6 @@
 import Header from '@/components/Header'
 import Hero from '@/components/Hero'
+import TechStack from '@/components/TechStack'
 import ProjectGallery from '@/components/ProjectGallery'
 import Capabilities from '@/components/Capabilities'
 import Experience from '@/components/Experience'
@@ -10,6 +11,7 @@ export default function Home() {
         <main className="min-h-screen">
             <Header />
             <Hero />
+            <TechStack />
             <ProjectGallery />
             <Capabilities />
             <Experience />
