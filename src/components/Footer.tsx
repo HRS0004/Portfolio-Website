@@ -4,154 +4,133 @@ import { Github, Linkedin, Mail, Download, Calendar } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 
 export default function Footer() {
-    const canvasRef = useRef<HTMLCanvasElement>(null)
+    const creatureRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        const canvas = canvasRef.current
-        if (!canvas) return
+        // Dynamically import anime.js
+        import('https://esm.sh/animejs').then((anime) => {
+            const { animate, createTimeline, createTimer, stagger, utils } = anime
 
-        const ctx = canvas.getContext('2d')
-        if (!ctx) return
+            const creatureEl = creatureRef.current
+            if (!creatureEl) return
 
-        const resizeCanvas = () => {
-            canvas.width = canvas.offsetWidth
-            canvas.height = canvas.offsetHeight
-        }
-        resizeCanvas()
-        window.addEventListener('resize', resizeCanvas)
+            const viewport = { w: window.innerWidth * .5, h: window.innerHeight * .5 }
+            const cursor = { x: 0, y: 0 }
+            const rows = 13
+            const grid = [rows, rows]
+            const from = 'center'
+            const scaleStagger = stagger([2, 5], { ease: 'inQuad', grid, from })
+            const opacityStagger = stagger([1, .1], { grid, from })
 
-        const particles: Array<{
-            x: number
-            y: number
-            size: number
-            baseX: number
-            baseY: number
-            density: number
-            opacity: number
-        }> = []
-
-        const mouse = { x: 0, y: 0, radius: 100 }
-
-        const initParticles = () => {
-            particles.length = 0
-            const rows = 8
-            const cols = 10
-            const spacingX = canvas.width / cols
-            const spacingY = canvas.height / rows
-
-            for (let i = 0; i < rows; i++) {
-                for (let j = 0; j < cols; j++) {
-                    const x = j * spacingX + spacingX / 2
-                    const y = i * spacingY + spacingY / 2
-                    particles.push({
-                        x,
-                        y,
-                        size: 3,
-                        baseX: x,
-                        baseY: y,
-                        density: Math.random() * 30 + 1,
-                        opacity: Math.random() * 0.5 + 0.3
-                    })
-                }
+            // Create particles
+            for (let i = 0; i < (rows * rows); i++) {
+                creatureEl.appendChild(document.createElement('div'))
             }
-        }
 
-        initParticles()
+            const particuleEls = creatureEl.querySelectorAll('div')
 
-        const handleMouseMove = (e: MouseEvent) => {
-            const rect = canvas.getBoundingClientRect()
-            mouse.x = e.clientX - rect.left
-            mouse.y = e.clientY - rect.top
-        }
-
-        canvas.addEventListener('mousemove', handleMouseMove)
-
-        const animate = () => {
-            ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-            particles.forEach((particle, index) => {
-                const dx = mouse.x - particle.x
-                const dy = mouse.y - particle.y
-                const distance = Math.sqrt(dx * dx + dy * dy)
-                const forceDirectionX = dx / distance
-                const forceDirectionY = dy / distance
-                const maxDistance = mouse.radius
-                const force = (maxDistance - distance) / maxDistance
-
-                if (distance < mouse.radius) {
-                    particle.x -= forceDirectionX * force * particle.density * 0.6
-                    particle.y -= forceDirectionY * force * particle.density * 0.6
-                } else {
-                    if (particle.x !== particle.baseX) {
-                        const dx = particle.x - particle.baseX
-                        particle.x -= dx / 10
-                    }
-                    if (particle.y !== particle.baseY) {
-                        const dy = particle.y - particle.baseY
-                        particle.y -= dy / 10
-                    }
-                }
-
-                const gradient = ctx.createRadialGradient(
-                    particle.x,
-                    particle.y,
-                    0,
-                    particle.x,
-                    particle.y,
-                    particle.size * 3
-                )
-                
-                if (index % 2 === 0) {
-                    gradient.addColorStop(0, `rgba(59, 130, 246, ${particle.opacity})`)
-                    gradient.addColorStop(1, 'rgba(59, 130, 246, 0)')
-                } else {
-                    gradient.addColorStop(0, `rgba(6, 182, 212, ${particle.opacity})`)
-                    gradient.addColorStop(1, 'rgba(6, 182, 212, 0)')
-                }
-
-                ctx.fillStyle = gradient
-                ctx.beginPath()
-                ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
-                ctx.fill()
-
-                particles.forEach((particle2, index2) => {
-                    if (index === index2) return
-                    const dx = particle.x - particle2.x
-                    const dy = particle.y - particle2.y
-                    const distance = Math.sqrt(dx * dx + dy * dy)
-
-                    if (distance < 120) {
-                        const opacity = (1 - distance / 120) * 0.15
-                        ctx.strokeStyle = index % 3 === 0 
-                            ? `rgba(59, 130, 246, ${opacity})` 
-                            : `rgba(6, 182, 212, ${opacity})`
-                        ctx.lineWidth = 0.5
-                        ctx.beginPath()
-                        ctx.moveTo(particle.x, particle.y)
-                        ctx.lineTo(particle2.x, particle2.y)
-                        ctx.stroke()
-                    }
-                })
+            utils.set(creatureEl, {
+                width: rows * 10 + 'em',
+                height: rows * 10 + 'em'
             })
 
-            requestAnimationFrame(animate)
-        }
+            utils.set(particuleEls, {
+                x: 0,
+                y: 0,
+                scale: scaleStagger,
+                opacity: opacityStagger,
+                background: stagger([80, 20], {
+                    grid, from,
+                    modifier: (v: number) => `hsl(210, 100%, ${v}%)`, // Blue hue
+                }),
+                boxShadow: stagger([8, 1], {
+                    grid, from,
+                    modifier: (v: number) => `0px 0px ${utils.round(v, 0)}em 0px hsl(210, 100%, 60%)`,
+                }),
+                zIndex: stagger([rows * rows, 1], { grid, from, modifier: utils.round(0) }),
+            })
 
-        animate()
+            const pulse = () => {
+                animate(particuleEls, {
+                    keyframes: [
+                        {
+                            scale: 5,
+                            opacity: 1,
+                            delay: stagger(90, { start: 1650, grid, from }),
+                            duration: 150,
+                        }, {
+                            scale: scaleStagger,
+                            opacity: opacityStagger,
+                            ease: 'inOutQuad',
+                            duration: 600
+                        }
+                    ],
+                })
+            }
 
-        return () => {
-            window.removeEventListener('resize', resizeCanvas)
-            canvas.removeEventListener('mousemove', handleMouseMove)
-        }
+            const mainLoop = createTimer({
+                frameRate: 15,
+                onUpdate: () => {
+                    animate(particuleEls, {
+                        x: cursor.x,
+                        y: cursor.y,
+                        delay: stagger(40, { grid, from }),
+                        duration: stagger(120, { start: 750, ease: 'inQuad', grid, from }),
+                        ease: 'inOut',
+                        composition: 'blend',
+                    })
+                }
+            })
+
+            const autoMove = createTimeline()
+                .add(cursor, {
+                    x: [-viewport.w * .45, viewport.w * .45],
+                    modifier: (x: number) => x + Math.sin(mainLoop.currentTime * .0007) * viewport.w * .5,
+                    duration: 3000,
+                    ease: 'inOutExpo',
+                    alternate: true,
+                    loop: true,
+                    onBegin: pulse,
+                    onLoop: pulse,
+                }, 0)
+                .add(cursor, {
+                    y: [-viewport.h * .45, viewport.h * .45],
+                    modifier: (y: number) => y + Math.cos(mainLoop.currentTime * .00012) * viewport.h * .5,
+                    duration: 1000,
+                    ease: 'inOutQuad',
+                    alternate: true,
+                    loop: true,
+                }, 0)
+
+            const manualMovementTimeout = createTimer({
+                duration: 1500,
+                onComplete: () => autoMove.play(),
+            })
+
+            const followPointer = (e: MouseEvent | TouchEvent) => {
+                const event = e.type === 'touchmove' ? (e as TouchEvent).touches[0] : e as MouseEvent
+                cursor.x = event.pageX - viewport.w
+                cursor.y = event.pageY - viewport.h
+                autoMove.pause()
+                manualMovementTimeout.restart()
+            }
+
+            document.addEventListener('mousemove', followPointer)
+            document.addEventListener('touchmove', followPointer)
+
+            return () => {
+                document.removeEventListener('mousemove', followPointer)
+                document.removeEventListener('touchmove', followPointer)
+            }
+        })
     }, [])
 
     return (
         <footer className="relative py-20 px-6 lg:px-24 border-t-2 border-primary/20 bg-neutral-950 overflow-hidden" data-testid="footer">
-            <canvas
-                ref={canvasRef}
-                className="absolute inset-0 w-full h-full opacity-40"
-                style={{ mixBlendMode: 'screen' }}
-            />
+            {/* Animated creature background */}
+            <div className="creature-wrapper">
+                <div ref={creatureRef} className="creature"></div>
+            </div>
 
             <div className="relative z-10 max-w-7xl mx-auto">
                 <div className="text-center mb-16">
@@ -234,6 +213,41 @@ export default function Footer() {
                     </div>
                 </div>
             </div>
+
+            <style jsx>{`
+                .creature-wrapper {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    overflow: hidden;
+                    width: 100%;
+                    height: 100%;
+                    pointer-events: none;
+                    opacity: 0.3;
+                }
+                .creature {
+                    font-size: .2vh;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 150em;
+                    height: 150em;
+                    flex-wrap: wrap;
+                }
+                .creature div {
+                    transform-style: preserve-3d;
+                    position: relative;
+                    width: 4em;
+                    height: 4em;
+                    margin: 3em;
+                    border-radius: 2em;
+                    will-change: transform;
+                    mix-blend-mode: plus-lighter;
+                }
+            `}</style>
         </footer>
     )
 }
