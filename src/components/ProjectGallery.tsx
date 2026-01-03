@@ -3,28 +3,30 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
-import { ExternalLink } from 'lucide-react'
+import { ExternalLink, Zap, Award } from 'lucide-react'
 
 const projects = [
     {
         title: "Interactive 3D Pump Visualization",
-        problem: "Kirloskar needed an engaging digital platform to showcase complex industrial pump mechanisms to clients and stakeholders.",
-        approach: "Built an interactive 3D web experience using Next.js and React Three Fiber, enabling real-time exploration of pump internals and technical specifications.",
-        tech: ["Next.js", "React Three Fiber", "Three.js", "GLSL Shaders", "Performance Optimization"],
-        outcome: "~40-60% faster initial load time through dynamic imports and optimized 3D asset loading. Smooth 60fps rendering on mid-range devices.",
+        company: "Kirloskar @ Hanumatrix",
+        outcome: "40-60% faster load • 60fps rendering",
+        problem: "Needed engaging digital platform for complex industrial pump mechanisms.",
+        tech: ["Next.js", "R3F", "Three.js", "GLSL"],
         image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=2070&auto=format&fit=crop",
         link: "#",
-        highlight: "3D Performance"
+        highlight: "3D Performance",
+        icon: Zap
     },
     {
-        title: "AI-Powered Complaint Management System",
-        problem: "Municipal corporations struggled with manual complaint categorization and priority assignment, leading to delayed citizen response times.",
-        approach: "Developed an AI/ML-powered system for Smart India Hackathon that automatically categorizes, prioritizes, and routes complaints using NLP and classification models.",
-        tech: ["Python", "Node.js", "TensorFlow", "PostgreSQL", "React", "REST APIs"],
-        outcome: "Selected for Smart India Hackathon national finals. System demonstrated measurable improvement in complaint processing efficiency and citizen satisfaction metrics.",
+        title: "AI-Powered Complaint System",
+        company: "Smart India Hackathon",
+        outcome: "National Finalist • Measurable efficiency gains",
+        problem: "Municipal corporations struggled with manual complaint categorization.",
+        tech: ["Python", "TensorFlow", "Node.js", "React"],
         image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop",
         link: "#",
-        highlight: "AI/ML Integration"
+        highlight: "AI/ML",
+        icon: Award
     }
 ]
 
@@ -53,14 +55,13 @@ export default function ProjectGallery() {
         // Animate project cards
         const projectCards = gsap.utils.toArray('.project-card')
         projectCards.forEach((card: any, index) => {
-            // Card entrance
             gsap.fromTo(
                 card,
-                { opacity: 0, y: 80 },
+                { opacity: 0, y: 60 },
                 {
                     opacity: 1,
                     y: 0,
-                    duration: 1.2,
+                    duration: 1,
                     ease: 'power3.out',
                     scrollTrigger: {
                         trigger: card,
@@ -68,156 +69,97 @@ export default function ProjectGallery() {
                     },
                 }
             )
-
-            // Image subtle zoom on scroll
-            const image = card.querySelector('.project-image')
-            gsap.fromTo(
-                image,
-                { scale: 1.05 },
-                {
-                    scale: 1,
-                    scrollTrigger: {
-                        trigger: card,
-                        start: 'top bottom',
-                        end: 'bottom top',
-                        scrub: 1,
-                    },
-                }
-            )
-
-            // Tech tags staggered entrance
-            const tags = card.querySelectorAll('.tech-tag')
-            gsap.fromTo(
-                tags,
-                { opacity: 0, y: 20 },
-                {
-                    opacity: 1,
-                    y: 0,
-                    stagger: 0.08,
-                    duration: 0.6,
-                    ease: 'power2.out',
-                    scrollTrigger: {
-                        trigger: card,
-                        start: 'top 75%',
-                    },
-                }
-            )
         })
     }, [])
 
     return (
-        <section className="section-padding" ref={containerRef} data-testid="projects-section">
+        <section className="py-20 px-6 lg:px-24" ref={containerRef} data-testid="projects-section">
             {/* Section Header */}
-            <div className="projects-header mb-20">
-                <div className="flex items-center gap-4 mb-6">
-                    <h2 className="heading-secondary uppercase">Featured Projects</h2>
-                    <div className="h-px flex-1 bg-white/10"></div>
-                </div>
-                <p className="body-large text-neutral-400 max-w-3xl">
-                    Case studies showcasing technical problem-solving, performance optimization, and interactive web experiences.
+            <div className="projects-header mb-16 text-center">
+                <h2 className="text-3xl lg:text-5xl font-bold uppercase mb-4">Featured Work</h2>
+                <p className="text-lg text-neutral-400 max-w-2xl mx-auto">
+                    Real projects, real impact, real metrics
                 </p>
             </div>
 
-            {/* Project Cards */}
-            <div className="space-y-32">
-                {projects.map((project, index) => (
-                    <div
-                        key={index}
-                        className="project-card grid lg:grid-cols-5 gap-12 items-start"
-                        data-testid={`project-card-${index}`}
-                    >
-                        {/* Image Section */}
-                        <div className={`lg:col-span-2 relative group ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
-                            {/* Highlight Badge */}
-                            <div className="absolute -top-4 left-0 z-20 px-4 py-1.5 bg-primary text-white text-xs font-mono uppercase tracking-wider">
-                                {project.highlight}
+            {/* Project Cards - Compact & Scannable */}
+            <div className="max-w-7xl mx-auto space-y-16">
+                {projects.map((project, index) => {
+                    const Icon = project.icon
+                    return (
+                        <div
+                            key={index}
+                            className="project-card grid lg:grid-cols-2 gap-8 items-center"
+                            data-testid={`project-card-${index}`}
+                        >
+                            {/* Image with badges */}
+                            <div className={`relative group ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
+                                {/* Highlight Badge */}
+                                <div className="absolute -top-3 left-4 z-20 px-4 py-2 bg-primary text-white text-sm font-mono uppercase tracking-wider shadow-lg flex items-center gap-2">
+                                    <Icon size={16} />
+                                    {project.highlight}
+                                </div>
+
+                                {/* Image Container */}
+                                <div className="relative overflow-hidden aspect-video bg-neutral-900 border-2 border-white/10 group-hover:border-primary/50 transition-all duration-500">
+                                    <img
+                                        src={project.image}
+                                        alt={project.title}
+                                        className="object-cover w-full h-full grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 to-transparent opacity-60" />
+                                </div>
                             </div>
 
-                            {/* Image Container */}
-                            <div className="relative overflow-hidden aspect-video bg-neutral-900 border border-white/10 glow-accent-hover">
-                                <img
-                                    src={project.image}
-                                    alt={project.title}
-                                    className="project-image object-cover w-full h-full grayscale group-hover:grayscale-0 transition-all duration-700"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/80 to-transparent opacity-60" />
-                                
-                                {/* Corner accent */}
-                                <div className="absolute top-0 right-0 w-16 h-16 border-t-2 border-r-2 border-primary/30 group-hover:border-secondary/60 transition-colors duration-500" />
-                            </div>
-                        </div>
+                            {/* Content - Compact */}
+                            <div className={`flex flex-col gap-5 ${index % 2 === 1 ? 'lg:order-1' : ''}`}>
+                                {/* Title & Company */}
+                                <div>
+                                    <h3 className="text-2xl lg:text-3xl font-bold mb-2" data-testid={`project-title-${index}`}>
+                                        {project.title}
+                                    </h3>
+                                    <p className="text-sm font-mono text-primary">{project.company}</p>
+                                </div>
 
-                        {/* Content Section - Case Study Format */}
-                        <div className={`lg:col-span-3 flex flex-col gap-8 ${index % 2 === 1 ? 'lg:order-1' : ''}`}>
-                            {/* Title */}
-                            <div>
-                                <h3 className="heading-tertiary mb-3" data-testid={`project-title-${index}`}>
-                                    {project.title}
-                                </h3>
-                                <div className="h-1 w-20 bg-gradient-to-r from-primary to-secondary"></div>
-                            </div>
+                                {/* Outcome - BIG & BOLD */}
+                                <div className="p-4 border-l-4 border-secondary bg-secondary/5">
+                                    <p className="text-lg font-semibold text-white leading-relaxed">
+                                        {project.outcome}
+                                    </p>
+                                </div>
 
-                            {/* Problem */}
-                            <div>
-                                <h4 className="text-sm font-mono text-primary uppercase tracking-wider mb-3">
-                                    Problem
-                                </h4>
-                                <p className="body-regular text-neutral-300">
+                                {/* Problem - Short */}
+                                <p className="text-neutral-400 leading-relaxed">
                                     {project.problem}
                                 </p>
-                            </div>
 
-                            {/* Approach */}
-                            <div>
-                                <h4 className="text-sm font-mono text-primary uppercase tracking-wider mb-3">
-                                    Approach
-                                </h4>
-                                <p className="body-regular text-neutral-300">
-                                    {project.approach}
-                                </p>
-                            </div>
-
-                            {/* Tech Stack */}
-                            <div>
-                                <h4 className="text-sm font-mono text-primary uppercase tracking-wider mb-4">
-                                    Tech Stack
-                                </h4>
-                                <div className="flex flex-wrap gap-3">
+                                {/* Tech Stack */}
+                                <div className="flex flex-wrap gap-2">
                                     {project.tech.map((tech, techIndex) => (
                                         <span
                                             key={techIndex}
-                                            className="tech-tag px-4 py-2 text-xs font-mono border border-primary/30 text-primary bg-primary/5 hover:bg-primary/10 transition-colors duration-300"
+                                            className="px-3 py-1 text-xs font-mono border border-primary/30 text-primary bg-primary/5"
                                         >
                                             {tech}
                                         </span>
                                     ))}
                                 </div>
-                            </div>
 
-                            {/* Outcome */}
-                            <div className="p-6 border-l-2 border-secondary bg-secondary/5">
-                                <h4 className="text-sm font-mono text-secondary uppercase tracking-wider mb-3">
-                                    Outcome
-                                </h4>
-                                <p className="body-regular text-neutral-300">
-                                    {project.outcome}
-                                </p>
-                            </div>
-
-                            {/* CTA Button */}
-                            <div>
-                                <a
-                                    href={project.link}
-                                    className="inline-flex items-center gap-3 px-8 py-3 border-2 border-primary text-primary font-mono text-sm tracking-wider uppercase hover:bg-primary/10 transition-all duration-300 group"
-                                    data-testid={`project-link-${index}`}
-                                >
-                                    <span>View Project</span>
-                                    <ExternalLink size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
-                                </a>
+                                {/* CTA */}
+                                <div>
+                                    <a
+                                        href={project.link}
+                                        className="inline-flex items-center gap-2 text-primary hover:text-white font-mono text-sm uppercase transition-colors duration-300 group"
+                                        data-testid={`project-link-${index}`}
+                                    >
+                                        <span>View Details</span>
+                                        <ExternalLink size={14} className="group-hover:translate-x-1 transition-transform duration-300" />
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    )
+                })}
             </div>
         </section>
     )
