@@ -2,11 +2,13 @@
 
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
+import { Download, Sparkles, Zap, Trophy } from 'lucide-react'
 
 export default function Hero() {
     const titleRef = useRef<HTMLHeadingElement>(null)
     const valueRef = useRef<HTMLDivElement>(null)
     const statusRef = useRef<HTMLDivElement>(null)
+    const statsRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
@@ -41,68 +43,114 @@ export default function Hero() {
             { opacity: 1, scale: 1, duration: 0.6 },
             '-=0.5'
         )
+
+        // Stats reveal
+        tl.fromTo(
+            statsRef.current,
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.8 },
+            '-=0.3'
+        )
     }, [])
 
     return (
         <section className="min-h-screen flex flex-col justify-center section-padding" data-testid="hero-section">
-            <div className="max-w-6xl">
-                {/* Name - Staggered Word Reveal */}
+            <div className="max-w-7xl">
+                {/* Name - Large & Bold */}
                 <h1
                     ref={titleRef}
-                    className="heading-primary mb-6 text-white uppercase leading-tight"
+                    className="text-6xl md:text-8xl lg:text-9xl font-bold mb-4 text-white uppercase leading-none"
                     data-testid="hero-name"
                 >
                     <span className="word inline-block mr-4 opacity-0">Hrishikesh</span>
                     <span className="word inline-block opacity-0">Supe</span>
                 </h1>
 
-                {/* Value Proposition - Clear & Confident */}
+                {/* Value Proposition - SHORT & PUNCHY */}
                 <div
                     ref={valueRef}
-                    className="mb-12 opacity-0"
+                    className="mb-8 opacity-0"
                     data-testid="hero-value-prop"
                 >
-                    <div className="flex items-center gap-4 mb-4">
-                        <span className="h-px w-16 bg-primary hidden md:block"></span>
-                        <h2 className="text-2xl lg:text-4xl font-bold text-primary">
-                            Frontend Developer & 3D Web Specialist
-                        </h2>
-                    </div>
-                    <p className="body-large text-neutral-300 max-w-3xl ml-0 md:ml-20 leading-relaxed">
-                        I build <span className="text-white font-semibold">performant 3D web experiences</span> that combine 
-                        technical depth with visual storytelling. Specialized in React, Three.js, and 
-                        <span className="text-secondary"> performance optimization</span> for interactive applications.
+                    <h2 className="text-3xl lg:text-5xl font-bold text-primary mb-4">
+                        Frontend + 3D Web Specialist
+                    </h2>
+                    <p className="text-xl lg:text-2xl text-neutral-300 max-w-4xl font-light">
+                        I build <span className="text-white font-semibold">performant 3D web experiences</span> with React, Three.js & performance optimization.
                     </p>
                 </div>
 
-                {/* Availability Status - Recruiter Signal */}
+                {/* Status + CTA - Side by Side */}
                 <div
                     ref={statusRef}
-                    className="opacity-0 inline-flex items-center gap-4 flex-wrap"
+                    className="opacity-0 flex flex-wrap items-center gap-4 mb-12"
                     data-testid="hero-status"
                 >
-                    <div className="flex items-center gap-3 px-5 py-3 border border-primary/30 bg-primary/5 backdrop-blur-sm">
+                    {/* Availability Badge */}
+                    <div className="flex items-center gap-3 px-5 py-3 border-2 border-secondary/50 bg-secondary/10 backdrop-blur-sm">
                         <div className="relative">
-                            <div className="w-2.5 h-2.5 bg-primary rounded-full"></div>
-                            <div className="absolute inset-0 w-2.5 h-2.5 bg-primary rounded-full animate-ping"></div>
+                            <div className="w-3 h-3 bg-secondary rounded-full"></div>
+                            <div className="absolute inset-0 w-3 h-3 bg-secondary rounded-full animate-ping"></div>
                         </div>
-                        <span className="text-sm font-mono text-neutral-300">
-                            Currently at <span className="text-white font-semibold">Hanumatrix</span>
+                        <span className="text-base font-mono text-white font-semibold">
+                            Open to Opportunities
                         </span>
                     </div>
-                    <div className="px-5 py-3 border border-secondary/30 bg-secondary/5 backdrop-blur-sm">
-                        <span className="text-sm font-mono text-secondary font-semibold">
-                            Open to New Opportunities
-                        </span>
+
+                    {/* Primary CTA - Download Resume */}
+                    <a
+                        href="#"
+                        className="inline-flex items-center gap-3 px-8 py-3 bg-primary text-white font-mono text-base font-semibold uppercase hover:bg-primary/90 transition-all duration-300 hover:shadow-[0_0_40px_rgba(59,130,246,0.5)] group"
+                        data-testid="hero-download-resume"
+                    >
+                        <Download size={20} className="group-hover:translate-y-1 transition-transform duration-300" />
+                        <span>Download Resume</span>
+                    </a>
+
+                    {/* Currently At */}
+                    <div className="text-base font-mono text-neutral-400">
+                        Currently at <span className="text-white font-semibold">Hanumatrix</span>
                     </div>
                 </div>
 
-                {/* Subtle technical accent */}
-                <div className="mt-16 flex items-center gap-2 text-xs font-mono text-neutral-600">
-                    <div className="w-2 h-2 border border-neutral-600"></div>
-                    <span>SYSTEM_INITIALIZED</span>
-                    <div className="h-px w-12 bg-neutral-800"></div>
-                    <span>V1.0_PRODUCTION</span>
+                {/* Quick Stats - Visual Impact */}
+                <div
+                    ref={statsRef}
+                    className="opacity-0 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl"
+                    data-testid="hero-stats"
+                >
+                    {/* Stat 1 */}
+                    <div className="flex items-start gap-4 p-5 border border-primary/20 bg-primary/5 hover:border-primary/40 transition-colors duration-300">
+                        <div className="p-2 bg-primary/20 rounded">
+                            <Zap className="w-6 h-6 text-primary" />
+                        </div>
+                        <div>
+                            <div className="text-3xl font-bold text-white mb-1">40-60%</div>
+                            <div className="text-sm text-neutral-400">Faster Load Times</div>
+                        </div>
+                    </div>
+
+                    {/* Stat 2 */}
+                    <div className="flex items-start gap-4 p-5 border border-primary/20 bg-primary/5 hover:border-primary/40 transition-colors duration-300">
+                        <div className="p-2 bg-primary/20 rounded">
+                            <Sparkles className="w-6 h-6 text-primary" />
+                        </div>
+                        <div>
+                            <div className="text-3xl font-bold text-white mb-1">60 FPS</div>
+                            <div className="text-sm text-neutral-400">3D Rendering</div>
+                        </div>
+                    </div>
+
+                    {/* Stat 3 */}
+                    <div className="flex items-start gap-4 p-5 border border-primary/20 bg-primary/5 hover:border-primary/40 transition-colors duration-300">
+                        <div className="p-2 bg-primary/20 rounded">
+                            <Trophy className="w-6 h-6 text-primary" />
+                        </div>
+                        <div>
+                            <div className="text-3xl font-bold text-white mb-1">SIH</div>
+                            <div className="text-sm text-neutral-400">National Finalist</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
