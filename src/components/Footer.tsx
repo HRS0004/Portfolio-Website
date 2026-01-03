@@ -15,11 +15,13 @@ export default function Footer() {
         // Footer content fade in
         gsap.fromTo(contentRef.current,
             { opacity: 0, y: 40 },
-            {\n                opacity: 1,
+            {
+                opacity: 1,
                 y: 0,
                 duration: 1,
                 ease: 'power2.out',
-                scrollTrigger: {\n                    trigger: contentRef.current,
+                scrollTrigger: {
+                    trigger: contentRef.current,
                     start: 'top 85%',
                     once: true
                 }
