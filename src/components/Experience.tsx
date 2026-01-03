@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 
 const experiences = [
     {
@@ -27,28 +29,49 @@ const experiences = [
 
 export default function Experience() {
     const sectionRef = useRef<HTMLElement>(null)
+    const headerRef = useRef<HTMLDivElement>(null)
+    const cardsRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.querySelectorAll('.stagger-item').forEach((el, index) => {
-                            setTimeout(() => {
-                                el.classList.add('animate-fade-up')
-                            }, index * 150)
-                        })
-                    }
-                })
-            },
-            { threshold: 0.1 }
+        gsap.registerPlugin(ScrollTrigger)
+
+        // Section header
+        gsap.fromTo(headerRef.current,
+            { opacity: 0, y: 30 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: headerRef.current,
+                    start: 'top 80%',
+                    once: true
+                }
+            }
         )
 
-        if (sectionRef.current) {
-            observer.observe(sectionRef.current)
+        // Experience cards stagger
+        const cards = cardsRef.current?.querySelectorAll('.experience-card')
+        if (cards) {
+            cards.forEach((card, index) => {
+                gsap.fromTo(card,
+                    { opacity: 0, x: index % 2 === 0 ? -40 : 40 },
+                    {
+                        opacity: 1,
+                        x: 0,
+                        duration: 0.8,
+                        ease: 'power2.out',
+                        scrollTrigger: {
+                            trigger: card,
+                            start: 'top 80%',
+                            once: true
+                        },
+                        delay: index * 0.2
+                    }
+                )
+            })
         }
-
-        return () => observer.disconnect()
     }, [])
 
     return (
@@ -60,22 +83,23 @@ export default function Experience() {
             <div className="absolute inset-0 grid-texture opacity-20"></div>
             
             <div className="section-container relative z-10">
-                {/* Section Label */}
-                <div className="stagger-item checkpoint-label mb-4 opacity-0 text-accent-orange">
-                    PROFESSIONAL_TIMELINE
+                {/* Section Header */}
+                <div ref={headerRef} style={{ opacity: 0 }}>
+                    <div className="checkpoint-label mb-4 text-accent-orange">
+                        PROFESSIONAL_TIMELINE
+                    </div>
+                    <h2 className="text-display-md mb-20">
+                        Work History
+                    </h2>
                 </div>
 
-                {/* Section Title */}
-                <h2 className="stagger-item text-display-md mb-20 opacity-0">
-                    Work History
-                </h2>
-
                 {/* Experience Cards */}
-                <div className="space-y-12">
+                <div ref={cardsRef} className="space-y-12">
                     {experiences.map((exp, index) => (
                         <div
                             key={index}
-                            className="stagger-item opacity-0 grid lg:grid-cols-12 gap-8 p-8 lg:p-12 border border-system-border bg-system-surface/20 hover:border-accent-orange/30 transition-colors duration-500"
+                            className="experience-card grid lg:grid-cols-12 gap-8 p-8 lg:p-12 border border-system-border bg-system-surface/20 hover:border-accent-orange/30 hover:shadow-[0_0_30px_rgba(249,115,22,0.1)] hover:translate-y-[-4px] transition-all duration-500"
+                            style={{ opacity: 0 }}
                             data-testid={`experience-${index}`}
                         >
                             {/* Period */}

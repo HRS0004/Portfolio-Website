@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 
 const capabilities = [
     { name: 'Web-based 3D', desc: 'React Three Fiber · GLSL Shaders' },
@@ -11,28 +13,48 @@ const capabilities = [
 
 export default function Capabilities() {
     const sectionRef = useRef<HTMLElement>(null)
+    const headerRef = useRef<HTMLDivElement>(null)
+    const cardsRef = useRef<HTMLDivElement>(null)
 
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.querySelectorAll('.stagger-item').forEach((el, index) => {
-                            setTimeout(() => {
-                                el.classList.add('animate-fade-up')
-                            }, index * 100)
-                        })
-                    }
-                })
-            },
-            { threshold: 0.1 }
+    useEffect() {
+        gsap.registerPlugin(ScrollTrigger)
+
+        // Section header
+        gsap.fromTo(headerRef.current,
+            { opacity: 0, y: 30 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: headerRef.current,
+                    start: 'top 80%',
+                    once: true
+                }
+            }
         )
 
-        if (sectionRef.current) {
-                    observer.observe(sectionRef.current)
+        // Capability cards stagger
+        const cards = cardsRef.current?.querySelectorAll('.capability-card')
+        if (cards) {
+            gsap.fromTo(cards,
+                { opacity: 0, y: 40, scale: 0.95 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    duration: 0.8,
+                    stagger: 0.12,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: cardsRef.current,
+                        start: 'top 75%',
+                        once: true
+                    }
+                }
+            )
         }
-
-        return () => observer.disconnect()
     }, [])
 
     return (
@@ -44,22 +66,23 @@ export default function Capabilities() {
             <div className="absolute inset-0 grid-texture opacity-20"></div>
             
             <div className="section-container relative z-10">
-                {/* Section Label */}
-                <div className="stagger-item checkpoint-label mb-4 opacity-0 text-accent-purple">
-                    SPECIALIZATIONS
+                {/* Section Header */}
+                <div ref={headerRef} style={{ opacity: 0 }}>
+                    <div className="checkpoint-label mb-4 text-accent-purple">
+                        SPECIALIZATIONS
+                    </div>
+                    <h2 className="text-display-md mb-20">
+                        Core Focus Areas
+                    </h2>
                 </div>
 
-                {/* Section Title */}
-                <h2 className="stagger-item text-display-md mb-20 opacity-0">
-                    Core Focus Areas
-                </h2>
-
                 {/* Capabilities Grid */}
-                <div className="grid md:grid-cols-2 gap-8">
+                <div ref={cardsRef} className="grid md:grid-cols-2 gap-8">
                     {capabilities.map((capability, index) => (
                         <div
                             key={index}
-                            className="stagger-item opacity-0 p-8 border border-system-border bg-system-surface/20 hover:border-accent-purple/30 transition-colors duration-500"
+                            className="capability-card p-8 border border-system-border bg-system-surface/20 hover:border-accent-purple/30 hover:shadow-[0_0_30px_rgba(168,85,247,0.1)] hover:translate-y-[-4px] transition-all duration-500"
+                            style={{ opacity: 0 }}
                             data-testid={`capability-${index}`}
                         >
                             <h3 className="text-2xl font-display font-bold mb-3">

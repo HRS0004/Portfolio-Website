@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 
 const projects = [
     {
@@ -23,28 +25,49 @@ const projects = [
 
 export default function ProjectGallery() {
     const sectionRef = useRef<HTMLElement>(null)
+    const headerRef = useRef<HTMLDivElement>(null)
+    const projectsRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.querySelectorAll('.stagger-item').forEach((el, index) => {
-                            setTimeout(() => {
-                                el.classList.add('animate-fade-up')
-                            }, index * 150)
-                        })
-                    }
-                })
-            },
-            { threshold: 0.1 }
+        gsap.registerPlugin(ScrollTrigger)
+
+        // Section header
+        gsap.fromTo(headerRef.current,
+            { opacity: 0, y: 30 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: headerRef.current,
+                    start: 'top 80%',
+                    once: true
+                }
+            }
         )
 
-        if (sectionRef.current) {
-            observer.observe(sectionRef.current)
+        // Project cards stagger
+        const projectCards = projectsRef.current?.querySelectorAll('.project-card')
+        if (projectCards) {
+            projectCards.forEach((card, index) => {
+                gsap.fromTo(card,
+                    { opacity: 0, y: 60 },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 1,
+                        ease: 'power2.out',
+                        scrollTrigger: {
+                            trigger: card,
+                            start: 'top 80%',
+                            once: true
+                        },
+                        delay: index * 0.2
+                    }
+                )
+            })
         }
-
-        return () => observer.disconnect()
     }, [])
 
     return (
@@ -56,22 +79,23 @@ export default function ProjectGallery() {
             <div className="absolute inset-0 grid-texture opacity-20"></div>
             
             <div className="section-container relative z-10">
-                {/* Section Label */}
-                <div className="stagger-item checkpoint-label mb-4 opacity-0 text-accent-green">
-                    COMPLETED_PROJECTS
+                {/* Section Header */}
+                <div ref={headerRef} style={{ opacity: 0 }}>
+                    <div className="checkpoint-label mb-4 text-accent-green">
+                        COMPLETED_PROJECTS
+                    </div>
+                    <h2 className="text-display-md mb-20">
+                        Key Achievements
+                    </h2>
                 </div>
 
-                {/* Section Title */}
-                <h2 className="stagger-item text-display-md mb-20 opacity-0">
-                    Key Achievements
-                </h2>
-
                 {/* Project Cards */}
-                <div className="space-y-12">
+                <div ref={projectsRef} className="space-y-12">
                     {projects.map((project) => (
                         <div
                             key={project.id}
-                            className="stagger-item opacity-0 grid lg:grid-cols-12 gap-8 p-8 lg:p-12 border border-system-border bg-system-surface/20 hover:border-accent-green/30 transition-colors duration-500"
+                            className="project-card grid lg:grid-cols-12 gap-8 p-8 lg:p-12 border border-system-border bg-system-surface/20 hover:border-accent-green/30 hover:shadow-[0_0_30px_rgba(16,185,129,0.1)] hover:translate-y-[-4px] transition-all duration-500"
+                            style={{ opacity: 0 }}
                             data-testid={`project-${project.id}`}
                         >
                             {/* Project Number */}
@@ -104,7 +128,7 @@ export default function ProjectGallery() {
                                     {project.tech.map((tech, index) => (
                                         <span
                                             key={index}
-                                            className="px-3 py-1 text-xs font-mono border border-system-border text-system-muted"
+                                            className="px-3 py-1 text-xs font-mono border border-system-border text-system-muted hover:text-accent-green hover:border-accent-green/30 hover:translate-y-[-2px] transition-all duration-300"
                                         >
                                             {tech}
                                         </span>
