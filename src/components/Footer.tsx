@@ -7,7 +7,7 @@ export default function Footer() {
     const creatureRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        import('animejs').then((animeModule) => {
+        import('animejs').then((animeModule: any) => {
             const anime = animeModule.default || animeModule
             
             const creatureEl = creatureRef.current
