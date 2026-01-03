@@ -156,7 +156,7 @@ export default function Footer() {
     }, [])
 
     return (
-        <footer className=\"relative py-20 px-6 lg:px-24 border-t-2 border-primary/20 bg-neutral-950 overflow-hidden\" data-testid=\"footer\">
+        <footer className="relative py-20 px-6 lg:px-24 border-t-2 border-primary/20 bg-neutral-950 overflow-hidden" data-testid="footer">
             {/* Animated canvas background */}
             <canvas
                 ref={canvasRef}
