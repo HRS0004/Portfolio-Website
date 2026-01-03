@@ -110,6 +110,7 @@ export default function Footer() {
 
             // Auto movement with pulse
             let autoMoveActive = true
+            const maxDistance = Math.sqrt(Math.pow((rows - 1) / 2, 2) * 2)
             const autoMove = () => {
                 if (!autoMoveActive) return
 
