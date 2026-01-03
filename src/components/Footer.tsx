@@ -21,14 +21,14 @@ export default function Footer() {
                         
                         <div className="flex flex-col sm:flex-row gap-4 pt-6">
                             <a
-                                href=\"#\"
+                                href="#"
                                 className="inline-flex items-center justify-center px-8 py-4 bg-white text-black font-sans font-medium uppercase tracking-wider text-sm hover:bg-white/90 transition-all duration-300"
                                 data-testid="download-resume-btn"
                             >
                                 Download Resume
                             </a>
                             <a
-                                href=\"#\"
+                                href="#"
                                 className="inline-flex items-center justify-center px-8 py-4 border border-system-border text-system-text font-sans font-medium uppercase tracking-wider text-sm hover:border-white/30 transition-all duration-300"
                                 data-testid="schedule-call-btn"
                             >
