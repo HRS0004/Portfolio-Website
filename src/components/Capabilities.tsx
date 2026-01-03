@@ -16,7 +16,7 @@ export default function Capabilities() {
     const headerRef = useRef<HTMLDivElement>(null)
     const cardsRef = useRef<HTMLDivElement>(null)
 
-    useEffect() {
+    useEffect(() => {
         gsap.registerPlugin(ScrollTrigger)
 
         // Section header
