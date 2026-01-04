@@ -3,95 +3,96 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
-import { Box, Gauge, Layers, Cpu } from 'lucide-react'
 
 const capabilities = [
-    {
-        icon: Box,
-        title: 'Web-based 3D',
-        metric: 'React Three Fiber · GLSL · WebGL',
-    },
-    {
-        icon: Gauge,
-        title: 'Performance',
-        metric: '40-60% Faster · GPU Optimization',
-    },
-    {
-        icon: Layers,
-        title: 'Industrial Viz',
-        metric: 'CAD Integration · Product Tours',
-    },
-    {
-        icon: Cpu,
-        title: 'Scroll Animation',
-        metric: 'GSAP · Framer Motion · Smooth UX',
-    },
+    { name: 'Web-based 3D', desc: 'React Three Fiber · GLSL Shaders' },
+    { name: 'Performance Optimization', desc: 'Load Time & GPU Efficiency' },
+    { name: 'Industrial Visualization', desc: 'CAD Integration · Product Tours' },
+    { name: 'Scroll Animation', desc: 'GSAP · Smooth Interactions' },
 ]
 
 export default function Capabilities() {
-    const containerRef = useRef<HTMLDivElement>(null)
+    const sectionRef = useRef<HTMLElement>(null)
+    const headerRef = useRef<HTMLDivElement>(null)
+    const cardsRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         gsap.registerPlugin(ScrollTrigger)
 
-        const cards = gsap.utils.toArray('.capability-card')
-        gsap.fromTo(
-            cards,
-            { opacity: 0, y: 40 },
+        // Section header
+        gsap.fromTo(headerRef.current,
+            { opacity: 0, y: 30 },
             {
                 opacity: 1,
                 y: 0,
                 duration: 0.8,
-                stagger: 0.1,
-                ease: 'power3.out',
+                ease: 'power2.out',
                 scrollTrigger: {
-                    trigger: containerRef.current,
+                    trigger: headerRef.current,
                     start: 'top 80%',
-                },
+                    once: true
+                }
             }
         )
+
+        // Capability cards stagger
+        const cards = cardsRef.current?.querySelectorAll('.capability-card')
+        if (cards) {
+            gsap.fromTo(cards,
+                { opacity: 0, y: 40, scale: 0.95 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    duration: 0.8,
+                    stagger: 0.12,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: cardsRef.current,
+                        start: 'top 75%',
+                        once: true
+                    }
+                }
+            )
+        }
     }, [])
 
     return (
-        <section
-            className="py-20 px-6 lg:px-24 bg-gradient-overlay-blue"
-            ref={containerRef}
+        <section 
+            ref={sectionRef}
+            className="py-32 relative border-t border-system-border" 
             data-testid="capabilities-section"
         >
-            <div className="max-w-7xl mx-auto">
-                {/* Header */}
-                <div className="mb-12 text-center">
-                    <h2 className="text-3xl lg:text-5xl font-bold uppercase mb-4">Core Capabilities</h2>
-                    <p className="text-lg text-neutral-400">What I specialize in</p>
+            <div className="absolute inset-0 grid-texture opacity-20"></div>
+            
+            <div className="section-container relative z-10">
+                {/* Section Header */}
+                <div ref={headerRef} style={{ opacity: 0 }}>
+                    <div className="checkpoint-label mb-4 text-accent-purple">
+                        SPECIALIZATIONS
+                    </div>
+                    <h2 className="text-display-md mb-20">
+                        Core Focus Areas
+                    </h2>
                 </div>
 
-                {/* Capability Cards - Compact Grid */}
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {capabilities.map((capability, index) => {
-                        const Icon = capability.icon
-                        return (
-                            <div
-                                key={index}
-                                className="capability-card group card-base p-6 text-center hover:border-primary/40 transition-all duration-300"
-                                data-testid={`capability-card-${index}`}
-                            >
-                                {/* Icon */}
-                                <div className="mb-4 inline-flex p-4 border-2 border-primary/30 bg-primary/5 rounded-lg group-hover:border-primary/60 group-hover:bg-primary/10 transition-all duration-300">
-                                    <Icon className="w-8 h-8 text-primary" />
-                                </div>
-
-                                {/* Title */}
-                                <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors duration-300">
-                                    {capability.title}
-                                </h3>
-
-                                {/* Metric */}
-                                <p className="text-xs font-mono text-secondary leading-relaxed">
-                                    {capability.metric}
-                                </p>
-                            </div>
-                        )
-                    })}
+                {/* Capabilities Grid */}
+                <div ref={cardsRef} className="grid md:grid-cols-2 gap-8">
+                    {capabilities.map((capability, index) => (
+                        <div
+                            key={index}
+                            className="capability-card p-8 border border-system-border bg-system-surface/20 hover:border-accent-purple/30 hover:shadow-[0_0_30px_rgba(168,85,247,0.1)] hover:translate-y-[-4px] transition-all duration-500"
+                            style={{ opacity: 0 }}
+                            data-testid={`capability-${index}`}
+                        >
+                            <h3 className="text-2xl font-display font-bold mb-3">
+                                {capability.name}
+                            </h3>
+                            <p className="text-sm text-system-muted font-mono">
+                                {capability.desc}
+                            </p>
+                        </div>
+                    ))}
                 </div>
             </div>
         </section>

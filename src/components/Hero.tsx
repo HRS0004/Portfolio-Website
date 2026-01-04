@@ -4,75 +4,147 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 
 export default function Hero() {
-    const titleRef = useRef<HTMLHeadingElement>(null)
-    const roleRef = useRef<HTMLHeadingElement>(null)
-    const descRef = useRef<HTMLParagraphElement>(null)
+    const nameRef = useRef<HTMLHeadingElement>(null)
+    const statusRef = useRef<HTMLDivElement>(null)
+    const metricRef = useRef<HTMLDivElement>(null)
+    const ctaRef = useRef<HTMLDivElement>(null)
+    const availRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
+        // Split name into individual letters for animation
+        const nameElement = nameRef.current
+        if (nameElement) {
+            const text = nameElement.textContent || ''
+            nameElement.innerHTML = text.split('').map((char, index) => 
+                char === ' ' 
+                    ? '<span class="letter" style="display: inline-block; width: 1rem;"></span>'
+                    : `<span class="letter" style="display: inline-block; opacity: 0;">${char}</span>`
+            ).join('')
+        }
 
-        // Staggered word reveal for name
-        if (titleRef.current) {
-            const words = titleRef.current.querySelectorAll('.word')
-            tl.fromTo(
-                words,
-                { opacity: 0, y: 40 },
+        const tl = gsap.timeline({ defaults: { ease: 'power2.out' } })
+
+        // Letter-by-letter reveal for name
+        const letters = nameRef.current?.querySelectorAll('.letter')
+        if (letters) {
+            tl.fromTo(letters,
+                { opacity: 0, y: 20 },
                 {
                     opacity: 1,
                     y: 0,
-                    duration: 1,
-                    stagger: 0.15,
+                    duration: 0.05,
+                    stagger: {
+                        amount: 0.8,
+                        from: 'start'
+                    }
                 }
             )
         }
 
-        // Role reveal
-        tl.fromTo(
-            roleRef.current,
+        // Continue with other elements
+        tl.fromTo(statusRef.current,
             { opacity: 0, y: 30 },
-            { opacity: 1, y: 0, duration: 1.2 },
-            '-=0.6'
+            { opacity: 1, y: 0, duration: 0.8 },
+            '-=0.3'
+        )
+        .fromTo(metricRef.current,
+            { opacity: 0, y: 30, scale: 0.95 },
+            { opacity: 1, y: 0, scale: 1, duration: 0.8 },
+            '-=0.5'
+        )
+        .fromTo(ctaRef.current,
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.6 },
+            '-=0.3'
+        )
+        .fromTo(availRef.current,
+            { opacity: 0 },
+            { opacity: 1, duration: 0.6 },
+            '-=0.2'
         )
 
-        // Description reveal
-        tl.fromTo(
-            descRef.current,
-            { opacity: 0, y: 20 },
-            { opacity: 1, y: 0, duration: 1 },
-            '-=0.8'
-        )
+        // Animate number count-up
+        const metricNumber = metricRef.current?.querySelector('.metric-number')
+        if (metricNumber) {
+            gsap.fromTo(metricNumber,
+                { textContent: 0 },
+                {
+                    textContent: 60,
+                    duration: 1.5,
+                    ease: 'power2.out',
+                    snap: { textContent: 1 },
+                    delay: 1.2
+                }
+            )
+        }
     }, [])
 
     return (
-        <section className="min-h-screen flex flex-col justify-center px-6 lg:px-24 py-32" data-testid="hero-section">
-            <div className="max-w-6xl mx-auto text-center">
-                {/* Name - Clean & Bold */}
-                <h1
-                    ref={titleRef}
-                    className="text-7xl md:text-8xl lg:text-9xl font-bold mb-12 text-white uppercase leading-none tracking-tight"
+        <section className="min-h-screen flex flex-col justify-center relative overflow-hidden" data-testid="hero-section">
+            {/* Subtle grid texture */}
+            <div className="absolute inset-0 grid-texture opacity-40"></div>
+            
+            <div className="section-container relative z-10">
+                {/* Checkpoint Label */}
+                <div className="checkpoint-label mb-8 opacity-0" style={{ animation: 'fadeIn 0.6s ease-out forwards' }}>
+                    SYSTEM_CHECKPOINT_2024
+                </div>
+
+                {/* Name - Single Line with Letter Animation */}
+                <h1 
+                    ref={nameRef}
+                    className="text-display-xl text-system-text mb-6 whitespace-nowrap"
                     data-testid="hero-name"
                 >
-                    <span className="word inline-block mr-6 opacity-0">Hrishikesh</span>
-                    <span className="word inline-block opacity-0">Supe</span>
+                    HRISHIKESH SUPE
                 </h1>
 
-                {/* Role - Clear Hierarchy */}
-                <h2
-                    ref={roleRef}
-                    className="text-3xl md:text-4xl lg:text-5xl font-semibold text-primary mb-8 opacity-0"
-                    data-testid="hero-role"
+                {/* Status Line - Single Accent */}
+                <div 
+                    className="flex items-center gap-4 mb-12"
+                    ref={statusRef}
+                    style={{ opacity: 0 }}
                 >
-                    Frontend + 3D Web Specialist
-                </h2>
+                    <div className="h-px w-12 bg-accent-blue"></div>
+                    <p className="text-xl lg:text-2xl text-system-muted font-sans">
+                        Frontend Developer specializing in{' '}
+                        <span className="text-accent-blue font-semibold">3D Web & Performance</span>
+                    </p>
+                </div>
 
-                {/* Description - Calm & Concise */}
-                <p
-                    ref={descRef}
-                    className="text-xl md:text-2xl text-neutral-400 max-w-4xl mx-auto font-light leading-relaxed opacity-0"
-                    data-testid="hero-description"
+                {/* Primary Metric - System Readout with hover */}
+                <div 
+                    className="mb-16 inline-block"
+                    ref={metricRef}
+                    style={{ opacity: 0 }}
                 >
-                    I build performant 3D web experiences with React, Three.js & performance optimization.
-                </p>
+                    <div className="inline-flex items-baseline gap-4 p-6 border border-system-border bg-system-surface/50 hover:border-accent-blue/50 hover:shadow-[0_0_30px_rgba(59,130,246,0.1)] transition-all duration-500">
+                        <div className="metric-display text-accent-blue">
+                            <span className="metric-number">0</span>
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-sm text-system-text font-medium">FPS</span>
+                            <span className="text-xs text-system-muted">3D Rendering Performance</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Single CTA with hover */}
+                <div ref={ctaRef} style={{ opacity: 0 }}>
+                    <a
+                        href="#"
+                        className="inline-flex items-center gap-3 px-8 py-4 bg-accent-blue text-white font-sans font-medium uppercase tracking-wider text-sm hover:bg-accent-blue/90 hover:translate-y-[-2px] hover:shadow-[0_4px_20px_rgba(59,130,246,0.3)] transition-all duration-300"
+                        data-testid="hero-cta"
+                    >
+                        View Full Report
+                    </a>
+                </div>
+
+                {/* Minimal status indicator */}
+                <div className="mt-24 flex items-center gap-3" style={{ opacity: 0 }} ref={availRef}>
+                    <div className="w-2 h-2 bg-accent-blue rounded-full animate-pulse"></div>
+                    <span className="checkpoint-label">Available for opportunities</span>
+                </div>
             </div>
         </section>
     )

@@ -3,118 +3,133 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
-import { Briefcase } from 'lucide-react'
 
 const experiences = [
     {
-        company: "Hanumatrix",
-        role: "Software Engineering Intern",
-        period: "2024 - Present",
-        description: "Next.js apps & 3D industrial platforms. Performance optimization & React Three Fiber.",
+        company: 'Hanumatrix',
+        role: 'Software Engineering Intern',
+        period: '2024 — Present',
         achievements: [
-            "40-60% faster load times for 3D visualizations",
-            "60fps rendering on mid-range devices",
-            "Dynamic imports & code splitting for assets"
+            '40-60% faster load times for 3D visualizations',
+            '60fps rendering on mid-range devices',
+            'Dynamic imports & code splitting'
         ]
     },
     {
-        company: "Agnirva Space",
-        role: "Research Intern",
-        period: "2023 - 2024",
-        description: "Satellite systems & AI/ML for climate analysis. Web-based data visualization.",
+        company: 'Agnirva Space',
+        role: 'Research Intern',
+        period: '2023 — 2024',
         achievements: [
-            "Web visualization tools for satellite telemetry",
-            "Real-time data pipelines (Python/Node.js)",
-            "Technical documentation for engineering teams"
+            'Web visualization for satellite telemetry',
+            'Real-time data pipelines',
+            'Technical documentation'
         ]
     }
 ]
 
 export default function Experience() {
-    const containerRef = useRef<HTMLDivElement>(null)
+    const sectionRef = useRef<HTMLElement>(null)
+    const headerRef = useRef<HTMLDivElement>(null)
+    const cardsRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         gsap.registerPlugin(ScrollTrigger)
 
-        const milestones = gsap.utils.toArray('.milestone')
-        milestones.forEach((milestone: any, index) => {
-            gsap.fromTo(
-                milestone,
-                { opacity: 0, x: index % 2 === 0 ? -40 : 40 },
-                {
-                    opacity: 1,
-                    x: 0,
-                    duration: 0.8,
-                    ease: 'power3.out',
-                    scrollTrigger: {
-                        trigger: milestone,
-                        start: 'top 80%',
-                    },
+        // Section header
+        gsap.fromTo(headerRef.current,
+            { opacity: 0, y: 30 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: headerRef.current,
+                    start: 'top 80%',
+                    once: true
                 }
-            )
-        })
+            }
+        )
+
+        // Experience cards stagger
+        const cards = cardsRef.current?.querySelectorAll('.experience-card')
+        if (cards) {
+            cards.forEach((card, index) => {
+                gsap.fromTo(card,
+                    { opacity: 0, x: index % 2 === 0 ? -40 : 40 },
+                    {
+                        opacity: 1,
+                        x: 0,
+                        duration: 0.8,
+                        ease: 'power2.out',
+                        scrollTrigger: {
+                            trigger: card,
+                            start: 'top 80%',
+                            once: true
+                        },
+                        delay: index * 0.2
+                    }
+                )
+            })
+        }
     }, [])
 
     return (
         <section 
-            className="py-20 px-6 lg:px-24 bg-gradient-overlay-blue" 
-            ref={containerRef}
+            ref={sectionRef}
+            className="py-32 relative border-t border-system-border" 
             data-testid="experience-section"
         >
-            <div className="max-w-6xl mx-auto">
-                {/* Header */}
-                <div className="mb-16 text-center">
-                    <h2 className="text-3xl lg:text-5xl font-bold uppercase mb-4">Experience</h2>
-                    <p className="text-lg text-neutral-400">Where I've worked</p>
+            <div className="absolute inset-0 grid-texture opacity-20"></div>
+            
+            <div className="section-container relative z-10">
+                {/* Section Header */}
+                <div ref={headerRef} style={{ opacity: 0 }}>
+                    <div className="checkpoint-label mb-4 text-accent-orange">
+                        PROFESSIONAL_TIMELINE
+                    </div>
+                    <h2 className="text-display-md mb-20">
+                        Work History
+                    </h2>
                 </div>
 
-                {/* Experience Cards - Simplified */}
-                <div className="space-y-8">
+                {/* Experience Cards */}
+                <div ref={cardsRef} className="space-y-12">
                     {experiences.map((exp, index) => (
-                        <div 
-                            key={index} 
-                            className="milestone card-base card-hover p-8 relative group"
-                            data-testid={`experience-card-${index}`}
+                        <div
+                            key={index}
+                            className="experience-card grid lg:grid-cols-12 gap-8 p-8 lg:p-12 border border-system-border bg-system-surface/20 hover:border-accent-orange/30 hover:shadow-[0_0_30px_rgba(249,115,22,0.1)] hover:translate-y-[-4px] transition-all duration-500"
+                            style={{ opacity: 0 }}
+                            data-testid={`experience-${index}`}
                         >
-                            <div className="flex flex-col lg:flex-row lg:items-start gap-6">
-                                {/* Icon */}
-                                <div className="flex-shrink-0">
-                                    <div className="p-3 bg-primary/10 border border-primary/30 rounded-lg">
-                                        <Briefcase className="w-6 h-6 text-primary" />
-                                    </div>
+                            {/* Period */}
+                            <div className="lg:col-span-3">
+                                <div className="checkpoint-label text-accent-orange">
+                                    {exp.period}
+                                </div>
+                            </div>
+
+                            {/* Content */}
+                            <div className="lg:col-span-9 space-y-6">
+                                <div>
+                                    <h3 className="text-2xl font-display font-bold mb-2">
+                                        {exp.company}
+                                    </h3>
+                                    <p className="text-sm text-system-muted">
+                                        {exp.role}
+                                    </p>
                                 </div>
 
-                                {/* Content */}
-                                <div className="flex-1">
-                                    {/* Header */}
-                                    <div className="mb-4">
-                                        <div className="flex flex-wrap items-center gap-3 mb-2">
-                                            <h3 className="text-2xl font-bold group-hover:text-primary transition-colors duration-300">
-                                                {exp.company}
-                                            </h3>
-                                            <span className="px-3 py-1 text-xs font-mono bg-primary/10 text-primary border border-primary/30">
-                                                {exp.period}
+                                {/* Achievements */}
+                                <div className="space-y-2">
+                                    {exp.achievements.map((achievement, achIndex) => (
+                                        <div key={achIndex} className="flex items-start gap-3">
+                                            <div className="w-1 h-1 bg-accent-orange rounded-full mt-2 flex-shrink-0"></div>
+                                            <span className="text-sm text-system-muted">
+                                                {achievement}
                                             </span>
                                         </div>
-                                        <h4 className="text-lg text-neutral-400 font-medium">{exp.role}</h4>
-                                    </div>
-
-                                    {/* Description */}
-                                    <p className="text-neutral-300 mb-4">
-                                        {exp.description}
-                                    </p>
-
-                                    {/* Achievements - Compact bullets */}
-                                    <div className="space-y-2">
-                                        {exp.achievements.map((achievement, achIndex) => (
-                                            <div key={achIndex} className="flex items-start gap-2">
-                                                <div className="w-1.5 h-1.5 bg-secondary rounded-full mt-2 flex-shrink-0"></div>
-                                                <p className="text-sm text-neutral-400">
-                                                    {achievement}
-                                                </p>
-                                            </div>
-                                        ))}
-                                    </div>
+                                    ))}
                                 </div>
                             </div>
                         </div>
