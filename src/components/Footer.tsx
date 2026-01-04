@@ -3,6 +3,7 @@
 import { Github, Linkedin, Mail } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
+import FooterVisual from './FooterVisual'
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
 
 export default function Footer() {
@@ -30,9 +31,10 @@ export default function Footer() {
     }, [])
 
     return (
-        <footer ref={sectionRef} className="py-20 relative border-t border-system-border" data-testid="footer">
-            <div className="absolute inset-0 grid-texture opacity-20"></div>
-            
+        <footer ref={sectionRef} className="py-20 relative border-t border-system-border overflow-hidden" data-testid="footer">
+            <FooterVisual />
+            <div className="absolute inset-0 grid-texture opacity-20 z-10 pointer-events-none"></div>
+
             <div className="section-container relative z-10" ref={contentRef} style={{ opacity: 0 }}>
                 {/* Top Section */}
                 <div className="grid lg:grid-cols-2 gap-16 mb-20">
@@ -44,7 +46,7 @@ export default function Footer() {
                         <h3 className="text-display-md">
                             Let's Build<br />Something Great
                         </h3>
-                        
+
                         <div className="flex flex-col sm:flex-row gap-4 pt-6">
                             <a
                                 href="#"
@@ -69,8 +71,8 @@ export default function Footer() {
                             <div className="checkpoint-label mb-3">
                                 EMAIL
                             </div>
-                            <a 
-                                href="mailto:hrishikesh.supe@example.com" 
+                            <a
+                                href="mailto:hrishikesh.supe@example.com"
                                 className="text-lg text-system-text hover:text-accent-blue transition-colors duration-300"
                                 data-testid="email-contact"
                             >

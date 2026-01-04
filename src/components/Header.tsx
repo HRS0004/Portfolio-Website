@@ -17,7 +17,7 @@ export default function Header() {
         <header className="fixed top-0 left-0 right-0 z-50 pointer-events-none" data-testid="header">
             <div className="section-container py-6 flex justify-between items-center">
                 <div className="pointer-events-auto">
-                    <div className="checkpoint-label">HRISHIKESH_SUPE</div>
+                    <div className="checkpoint-label">HRSHIKESH_SUPE</div>
                 </div>
 
                 <div className="pointer-events-auto checkpoint-label">
