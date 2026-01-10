@@ -1,14 +1,12 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
+import RevealOnScroll from './ui/RevealOnScroll'
 
 const experiences = [
     {
         company: 'Hanumatrix',
         role: 'Software Engineering Intern',
-        period: '2024 — Present',
+        period: '2024 — PRESENT',
         achievements: [
             '40-60% faster load times for 3D visualizations',
             '60fps rendering on mid-range devices',
@@ -28,113 +26,59 @@ const experiences = [
 ]
 
 export default function Experience() {
-    const sectionRef = useRef<HTMLElement>(null)
-    const headerRef = useRef<HTMLDivElement>(null)
-    const cardsRef = useRef<HTMLDivElement>(null)
-
-    useEffect(() => {
-        gsap.registerPlugin(ScrollTrigger)
-
-        // Section header
-        gsap.fromTo(headerRef.current,
-            { opacity: 0, y: 30 },
-            {
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                ease: 'power2.out',
-                scrollTrigger: {
-                    trigger: headerRef.current,
-                    start: 'top 80%',
-                    once: true
-                }
-            }
-        )
-
-        // Experience cards stagger
-        const cards = cardsRef.current?.querySelectorAll('.experience-card')
-        if (cards) {
-            cards.forEach((card, index) => {
-                gsap.fromTo(card,
-                    { opacity: 0, x: index % 2 === 0 ? -40 : 40 },
-                    {
-                        opacity: 1,
-                        x: 0,
-                        duration: 0.8,
-                        ease: 'power2.out',
-                        scrollTrigger: {
-                            trigger: card,
-                            start: 'top 80%',
-                            once: true
-                        },
-                        delay: index * 0.2
-                    }
-                )
-            })
-        }
-    }, [])
-
     return (
-        <section 
-            ref={sectionRef}
-            className="py-32 relative border-t border-system-border" 
-            data-testid="experience-section"
-        >
-            <div className="absolute inset-0 grid-texture opacity-20"></div>
-            
-            <div className="section-container relative z-10">
-                {/* Section Header */}
-                <div ref={headerRef} style={{ opacity: 0 }}>
-                    <div className="checkpoint-label mb-4 text-accent-orange">
-                        PROFESSIONAL_TIMELINE
+        <section className="py-32 relative z-10 bg-void">
+            <div className="max-w-7xl mx-auto px-6 lg:px-12 relative">
+
+                <RevealOnScroll className="mb-24 flex md:justify-end">
+                    <div className="text-right">
+                        <span className="text-acid font-mono text-xs tracking-[0.3em] uppercase opacity-80 block mb-2">
+                            Chronology
+                        </span>
+                        <h2 className="text-5xl md:text-7xl font-display font-bold text-mint uppercase tracking-tighter">
+                            Active <span className="text-transparent bg-clip-text bg-gradient-to-l from-acid to-toxic">Logs</span>
+                        </h2>
                     </div>
-                    <h2 className="text-display-md mb-20">
-                        Work History
-                    </h2>
-                </div>
+                </RevealOnScroll>
 
-                {/* Experience Cards */}
-                <div ref={cardsRef} className="space-y-12">
-                    {experiences.map((exp, index) => (
-                        <div
-                            key={index}
-                            className="experience-card grid lg:grid-cols-12 gap-8 p-8 lg:p-12 border border-system-border bg-system-surface/20 hover:border-accent-orange/30 hover:shadow-[0_0_30px_rgba(249,115,22,0.1)] hover:translate-y-[-4px] transition-all duration-500"
-                            style={{ opacity: 0 }}
-                            data-testid={`experience-${index}`}
-                        >
-                            {/* Period */}
-                            <div className="lg:col-span-3">
-                                <div className="checkpoint-label text-accent-orange">
-                                    {exp.period}
-                                </div>
-                            </div>
-
-                            {/* Content */}
-                            <div className="lg:col-span-9 space-y-6">
-                                <div>
-                                    <h3 className="text-2xl font-display font-bold mb-2">
-                                        {exp.company}
-                                    </h3>
-                                    <p className="text-sm text-system-muted">
-                                        {exp.role}
-                                    </p>
+                <div className="space-y-16 border-l-2 border-acid/10 ml-4 md:ml-12 pl-8 md:pl-16 relative">
+                    {experiences.map((exp, i) => (
+                        <RevealOnScroll key={i} delay={i * 200}>
+                            <div className="relative group">
+                                {/* Timeline Dot */}
+                                <div className="absolute -left-[41px] md:-left-[73px] top-2 w-5 h-5 bg-void border border-acid rounded-full group-hover:bg-acid transition-colors duration-300">
+                                    <div className="absolute inset-0 bg-acid/50 rounded-full animate-ping opacity-0 group-hover:opacity-100"></div>
                                 </div>
 
-                                {/* Achievements */}
-                                <div className="space-y-2">
-                                    {exp.achievements.map((achievement, achIndex) => (
-                                        <div key={achIndex} className="flex items-start gap-3">
-                                            <div className="w-1 h-1 bg-accent-orange rounded-full mt-2 flex-shrink-0"></div>
-                                            <span className="text-sm text-system-muted">
-                                                {achievement}
-                                            </span>
+                                <div className="glass-panel p-8 md:p-10 rounded-r-3xl rounded-bl-3xl border-l-4 border-l-acid hover:border-l-toxic transition-all duration-300">
+                                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
+                                        <div>
+                                            <h3 className="text-3xl font-display font-bold text-mint group-hover:text-white transition-colors">
+                                                {exp.company}
+                                            </h3>
+                                            <p className="text-acid font-mono text-sm tracking-wider mt-1">
+                                                {exp.role}
+                                            </p>
                                         </div>
-                                    ))}
+                                        <div className="text-xs font-mono text-mint/50 border border-mint/10 px-3 py-1 rounded bg-void/50 self-start">
+                                            {exp.period}
+                                        </div>
+                                    </div>
+
+                                    <ul className="space-y-3">
+                                        {exp.achievements.map((item, idx) => (
+                                            <li key={idx} className="flex items-start gap-3 text-mint/70 font-light text-base group-hover:text-mint/90">
+                                                <span className="text-acid mt-1.5 text-[10px]">{'>'}{'>'}</span>
+                                                {item}
+                                            </li>
+                                        ))}
+                                    </ul>
                                 </div>
                             </div>
-                        </div>
+                        </RevealOnScroll>
                     ))}
                 </div>
+
             </div>
         </section>
     )

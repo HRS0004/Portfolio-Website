@@ -96,10 +96,10 @@ export default function CustomCursor() {
     }, [isVisible, mouseX, mouseY])
 
     return (
-        <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden mix-blend-difference">
+        <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden mix-blend-exclusion">
             {/* Primary Dot - Sharp Precision */}
             <motion.div
-                className="absolute w-2 h-2 bg-white rounded-full"
+                className="absolute w-2 h-2 bg-acid rounded-full shadow-[0_0_10px_#d9ff00]"
                 style={{
                     x: cursorX,
                     y: cursorY,
@@ -108,14 +108,14 @@ export default function CustomCursor() {
                 }}
                 animate={{
                     opacity: isVisible ? 1 : 0,
-                    scale: isClicking ? 0.8 : (isHovering ? 0 : 1), // Disappears on hover to let the ring take over, or shrinks
+                    scale: isClicking ? 0.8 : (isHovering ? 0 : 1),
                 }}
                 transition={{ duration: 0.1 }}
             />
 
             {/* Trailing Ring - Technical HUD */}
             <motion.div
-                className="absolute border border-white flex items-center justify-center"
+                className="absolute border border-acid flex items-center justify-center"
                 style={{
                     x: trailX,
                     y: trailY,
@@ -124,12 +124,12 @@ export default function CustomCursor() {
                 }}
                 animate={{
                     opacity: isVisible ? 1 : 0,
-                    width: isHovering ? 60 : 20,
-                    height: isHovering ? 60 : 20,
-                    borderRadius: isHovering ? '50%' : '30%', // Squircle to Circle
-                    backgroundColor: isHovering ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-                    borderColor: isHovering ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.4)',
-                    rotate: isHovering ? 45 : 0,
+                    width: isHovering ? 60 : 24,
+                    height: isHovering ? 60 : 24,
+                    borderRadius: isHovering ? '50%' : '2px', // Square to Circle
+                    backgroundColor: isHovering ? 'rgba(217, 255, 0, 0.05)' : 'transparent',
+                    borderColor: isHovering ? 'rgba(217, 255, 0, 0.8)' : 'rgba(57, 255, 20, 0.4)',
+                    rotate: isHovering ? 90 : 45, // Diamond to Square roll
                     scale: isClicking ? 0.9 : 1,
                 }}
                 transition={{
@@ -144,17 +144,17 @@ export default function CustomCursor() {
                         <motion.div
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
-                            className="absolute w-1 h-1 bg-accent-blue rounded-full"
+                            className="absolute w-1 h-1 bg-toxic rounded-full"
                         />
                         <motion.div
                             initial={{ width: 0 }}
-                            animate={{ width: '100%' }}
-                            className="absolute w-full h-[1px] bg-white/20"
+                            animate={{ width: '120%' }}
+                            className="absolute w-full h-[1px] bg-acid/30"
                         />
                         <motion.div
                             initial={{ height: 0 }}
-                            animate={{ height: '100%' }}
-                            className="absolute h-full w-[1px] bg-white/20"
+                            animate={{ height: '120%' }}
+                            className="absolute h-full w-[1px] bg-acid/30"
                         />
                     </>
                 )}

@@ -1,122 +1,66 @@
 'use client'
 
-import { Github, Linkedin, Mail } from 'lucide-react'
-import { useEffect, useRef } from 'react'
-import gsap from 'gsap'
-import FooterVisual from './FooterVisual'
-import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
+import React from 'react'
+import RevealOnScroll from './ui/RevealOnScroll'
+import { Github, Linkedin, Mail, Twitter } from 'lucide-react'
 
 export default function Footer() {
-    const sectionRef = useRef<HTMLElement>(null)
-    const contentRef = useRef<HTMLDivElement>(null)
-
-    useEffect(() => {
-        gsap.registerPlugin(ScrollTrigger)
-
-        // Footer content fade in
-        gsap.fromTo(contentRef.current,
-            { opacity: 0, y: 40 },
-            {
-                opacity: 1,
-                y: 0,
-                duration: 1,
-                ease: 'power2.out',
-                scrollTrigger: {
-                    trigger: contentRef.current,
-                    start: 'top 85%',
-                    once: true
-                }
-            }
-        )
-    }, [])
-
     return (
-        <footer ref={sectionRef} className="py-20 relative border-t border-system-border overflow-hidden" data-testid="footer">
-            <FooterVisual />
-            <div className="absolute inset-0 grid-texture opacity-20 z-10 pointer-events-none"></div>
+        <footer className="relative bg-void pt-32 pb-12 overflow-hidden border-t border-acid/10">
+            {/* Background Effects */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom,_var(--tw-gradient-stops))] from-toxic/10 via-void to-void pointer-events-none" />
 
-            <div className="section-container relative z-10" ref={contentRef} style={{ opacity: 0 }}>
-                {/* Top Section */}
-                <div className="grid lg:grid-cols-2 gap-16 mb-20">
-                    {/* Left - CTA */}
-                    <div className="space-y-6">
-                        <div className="checkpoint-label mb-4">
-                            CONTACT_AVAILABLE
-                        </div>
-                        <h3 className="text-display-md">
-                            Let's Build<br />Something Great
-                        </h3>
+            <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
 
-                        <div className="flex flex-col sm:flex-row gap-4 pt-6">
-                            <a
-                                href="#"
-                                className="inline-flex items-center justify-center px-8 py-4 bg-white text-black font-sans font-medium uppercase tracking-wider text-sm hover:bg-white/90 hover:translate-y-[-2px] hover:shadow-[0_4px_20px_rgba(255,255,255,0.2)] transition-all duration-300"
-                                data-testid="download-resume-btn"
-                            >
-                                Download Resume
-                            </a>
-                            <a
-                                href="#"
-                                className="inline-flex items-center justify-center px-8 py-4 border border-system-border text-system-text font-sans font-medium uppercase tracking-wider text-sm hover:border-white/30 hover:translate-y-[-2px] transition-all duration-300"
-                                data-testid="schedule-call-btn"
-                            >
-                                Schedule Call
-                            </a>
-                        </div>
-                    </div>
-
-                    {/* Right - Contact */}
-                    <div className="space-y-8">
-                        <div>
-                            <div className="checkpoint-label mb-3">
-                                EMAIL
-                            </div>
-                            <a
-                                href="mailto:hrishikesh.supe@example.com"
-                                className="text-lg text-system-text hover:text-accent-blue transition-colors duration-300"
-                                data-testid="email-contact"
-                            >
-                                hrishikesh.supe@example.com
-                            </a>
-                        </div>
-
-                        <div>
-                            <div className="checkpoint-label mb-3">
-                                SOCIAL
-                            </div>
-                            <div className="flex gap-6">
-                                <a
-                                    href="https://github.com"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-system-muted hover:text-system-text hover:translate-y-[-2px] transition-all duration-300"
-                                    data-testid="github-link"
-                                >
-                                    <Github size={20} />
+                {/* Massive CTA */}
+                <RevealOnScroll>
+                    <div className="mb-24 text-center">
+                        <h2 className="text-[10vw] leading-[0.8] font-bold font-display text-transparent bg-clip-text bg-gradient-to-b from-mint to-void uppercase tracking-tighter opacity-30 select-none">
+                            Init_Link
+                        </h2>
+                        <div className="relative -mt-[5vw] z-10">
+                            <h3 className="text-4xl md:text-6xl font-display font-bold text-mint mb-8">
+                                Ready to <span className="text-acid">Deploy?</span>
+                            </h3>
+                            <div className="flex flex-col md:flex-row items-center justify-center gap-6">
+                                <a href="mailto:hrishikesh.supe@example.com" className="px-8 py-4 bg-acid text-black font-bold font-mono uppercase tracking-widest hover:bg-toxic hover:shadow-neon transition-all duration-300">
+                                    Initialize_Chat()
                                 </a>
-                                <a
-                                    href="https://linkedin.com"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-system-muted hover:text-system-text hover:translate-y-[-2px] transition-all duration-300"
-                                    data-testid="linkedin-link"
-                                >
-                                    <Linkedin size={20} />
+                                <a href="#" className="px-8 py-4 border border-acid/30 text-acid font-mono uppercase tracking-widest hover:bg-acid/10 transition-all duration-300">
+                                    Download_CV_v2.0
                                 </a>
                             </div>
                         </div>
                     </div>
+                </RevealOnScroll>
+
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 border-t border-mint/10 pt-16">
+                    <div className="space-y-4">
+                        <h4 className="text-acid font-mono text-sm uppercase tracking-widest">Coordinates</h4>
+                        <p className="text-mint/60 font-mono text-sm">
+                            Pune, IN<br />
+                            Remote Available
+                        </p>
+                    </div>
+                    <div className="space-y-4">
+                        <h4 className="text-acid font-mono text-sm uppercase tracking-widest">Connect</h4>
+                        <div className="flex gap-4 text-mint/60">
+                            <a href="#" className="hover:text-acid transition-colors"><Github /></a>
+                            <a href="#" className="hover:text-acid transition-colors"><Linkedin /></a>
+                            <a href="#" className="hover:text-acid transition-colors"><Twitter /></a>
+                            <a href="#" className="hover:text-acid transition-colors"><Mail /></a>
+                        </div>
+                    </div>
+                    <div className="lg:col-span-2 text-right">
+                        <div className="text-[10px] text-acid/40 font-mono uppercase tracking-[0.2em] mb-2">
+                            System Status: Nominal
+                        </div>
+                        <div className="text-[10px] text-mint/20 font-mono uppercase">
+                            © {new Date().getFullYear()} Hrishikesh Supe · Built with Next.js & Anime.js
+                        </div>
+                    </div>
                 </div>
 
-                {/* Bottom */}
-                <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-8 border-t border-system-border">
-                    <div className="checkpoint-label">
-                        © {new Date().getFullYear()} Hrishikesh Supe · Frontend + 3D Specialist
-                    </div>
-                    <div className="checkpoint-label">
-                        SYSTEM_STATUS_OPERATIONAL
-                    </div>
-                </div>
             </div>
         </footer>
     )

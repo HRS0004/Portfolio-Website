@@ -79,15 +79,15 @@ const AnimatedBackground: React.FC = () => {
         // Third noise layer for extra complexity in movement
         float n3 = snoise(st_corrected * 0.9 + t * 0.1);
 
-        // Define Palette
-        // Base: Deep Charcoal / Navy
-        vec3 colorBg = vec3(0.06, 0.08, 0.12); 
+        // Define Palette - BIO-DIGITAL TOXIN
+        // Base: Void Green
+        vec3 colorBg = vec3(0.01, 0.02, 0.01); 
         
-        // Mid: Steel Blue
-        vec3 colorMid = vec3(0.15, 0.22, 0.32);
+        // Mid: Deep Jungle / Emerald
+        vec3 colorMid = vec3(0.0, 0.2, 0.1);
         
-        // Highlight: Desaturated Soft Cyan / Slate
-        vec3 colorLight = vec3(0.25, 0.35, 0.42);
+        // Highlight: Toxic Lime / Electric Teal
+        vec3 colorLight = vec3(0.2, 1.0, 0.1);
 
         // Mix colors based on noise
         // Create a flowing field
@@ -96,11 +96,11 @@ const AnimatedBackground: React.FC = () => {
         float mix3 = smoothstep(-1.0, 1.0, n3);
 
         vec3 color = mix(colorBg, colorMid, mix1);
-        color = mix(color, colorLight, mix2 * 0.6 * mix3); // Modulate highlight with third noise
+        color = mix(color, colorLight, mix2 * 0.4 * mix3); // Sharp highlights
         
-        // Add a subtle vignette or gradient falloff to keep edges darker
+        // Add a subtle vignette 
         float dist = distance(st, vec2(0.5));
-        color = mix(color, colorBg, dist * 0.7);
+        color = mix(color, colorBg, dist * 0.9);
 
         // --- FILM GRAIN ---
         // High frequency static noise

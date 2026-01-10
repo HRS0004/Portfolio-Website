@@ -1,151 +1,149 @@
-'use client'
+'use client';
 
-import { useEffect, useRef } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
+import React, { useEffect, useRef } from 'react';
+// @ts-ignore
+import { animate } from 'animejs';
+import RevealOnScroll from './ui/RevealOnScroll';
+import { ArrowUpRight, Github, ExternalLink } from 'lucide-react';
 
 const projects = [
     {
         id: '01',
-        title: 'Interactive 3D Pump Visualization',
+        title: 'Industrial 3D Viz',
+        subtitle: 'Interactive Pump Visualization',
         company: 'Kirloskar @ Hanumatrix',
-        impact: '40-60% faster load times',
-        tech: ['Next.js', 'React Three Fiber', 'GLSL'],
-        year: '2024'
+        impact: '40-60% perf boost',
+        description: 'High-performance 3D visualization platform for industrial components. Features real-time rendering, exploded views, and technical specifications integration.',
+        tech: ['Next.js', 'R3F', 'GLSL', 'WebGL'],
+        year: '2024',
+        color: '#3b82f6'
     },
     {
         id: '02',
-        title: 'AI-Powered Complaint Management',
+        title: 'AI Complaints',
+        subtitle: 'Intelligent Management System',
         company: 'Smart India Hackathon',
-        impact: 'National Finalist Selection',
-        tech: ['Python', 'TensorFlow', 'React'],
-        year: '2024'
+        impact: 'National Finalist',
+        description: 'Automated complaint classification and routing system using NLP. Streamlined civic grievance redressal with 95% accuracy in category prediction.',
+        tech: ['Python', 'TensorFlow', 'React', 'FastAPI'],
+        year: '2024',
+        color: '#10b981'
     }
-]
+];
 
 export default function ProjectGallery() {
-    const sectionRef = useRef<HTMLElement>(null)
-    const headerRef = useRef<HTMLDivElement>(null)
-    const projectsRef = useRef<HTMLDivElement>(null)
-
-    useEffect(() => {
-        gsap.registerPlugin(ScrollTrigger)
-
-        // Section header
-        gsap.fromTo(headerRef.current,
-            { opacity: 0, y: 30 },
-            {
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                ease: 'power2.out',
-                scrollTrigger: {
-                    trigger: headerRef.current,
-                    start: 'top 80%',
-                    once: true
-                }
-            }
-        )
-
-        // Project cards stagger
-        const projectCards = projectsRef.current?.querySelectorAll('.project-card')
-        if (projectCards) {
-            projectCards.forEach((card, index) => {
-                gsap.fromTo(card,
-                    { opacity: 0, y: 60 },
-                    {
-                        opacity: 1,
-                        y: 0,
-                        duration: 1,
-                        ease: 'power2.out',
-                        scrollTrigger: {
-                            trigger: card,
-                            start: 'top 80%',
-                            once: true
-                        },
-                        delay: index * 0.2
-                    }
-                )
-            })
-        }
-    }, [])
-
     return (
-        <section 
-            ref={sectionRef}
-            className="py-32 relative border-t border-system-border" 
-            data-testid="projects-section"
-        >
-            <div className="absolute inset-0 grid-texture opacity-20"></div>
-            
-            <div className="section-container relative z-10">
-                {/* Section Header */}
-                <div ref={headerRef} style={{ opacity: 0 }}>
-                    <div className="checkpoint-label mb-4 text-accent-green">
-                        COMPLETED_PROJECTS
-                    </div>
-                    <h2 className="text-display-md mb-20">
-                        Key Achievements
-                    </h2>
+        <section className="relative py-32 px-4 md:px-12 w-full max-w-7xl mx-auto z-10">
+
+            {/* Section Header */}
+            <RevealOnScroll className="mb-24">
+                <div className="flex items-center gap-4 mb-4">
+                    <span className="text-accent-glow font-mono text-xs tracking-widest uppercase">Selected Works</span>
+                    <div className="h-[1px] w-12 bg-accent-glow/30"></div>
                 </div>
+                <h2 className="text-5xl md:text-7xl font-display font-bold text-white tracking-tighter">
+                    Featured <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-primary to-accent-glow">Inventions</span>
+                </h2>
+            </RevealOnScroll>
 
-                {/* Project Cards */}
-                <div ref={projectsRef} className="space-y-12">
-                    {projects.map((project) => (
-                        <div
-                            key={project.id}
-                            className="project-card grid lg:grid-cols-12 gap-8 p-8 lg:p-12 border border-system-border bg-system-surface/20 hover:border-accent-green/30 hover:shadow-[0_0_30px_rgba(16,185,129,0.1)] hover:translate-y-[-4px] transition-all duration-500"
-                            style={{ opacity: 0 }}
-                            data-testid={`project-${project.id}`}
-                        >
-                            {/* Project Number */}
-                            <div className="lg:col-span-2">
-                                <div className="text-6xl font-display font-bold text-accent-green/30">
-                                    {project.id}
-                                </div>
-                            </div>
-
-                            {/* Project Content */}
-                            <div className="lg:col-span-7 space-y-6">
-                                <div>
-                                    <h3 className="text-2xl font-display font-bold mb-2">
-                                        {project.title}
-                                    </h3>
-                                    <p className="text-sm text-system-muted">
-                                        {project.company}
-                                    </p>
-                                </div>
-
-                                {/* Impact */}
-                                <div className="inline-flex items-center gap-3 px-4 py-2 border-l-2 border-accent-green bg-accent-green/5">
-                                    <span className="text-sm font-medium text-accent-green">
-                                        {project.impact}
-                                    </span>
-                                </div>
-
-                                {/* Tech Stack */}
-                                <div className="flex flex-wrap gap-2">
-                                    {project.tech.map((tech, index) => (
-                                        <span
-                                            key={index}
-                                            className="px-3 py-1 text-xs font-mono border border-system-border text-system-muted hover:text-accent-green hover:border-accent-green/30 hover:translate-y-[-2px] transition-all duration-300"
-                                        >
-                                            {tech}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Year */}
-                            <div className="lg:col-span-3 flex lg:justify-end items-start">
-                                <div className="checkpoint-label">
-                                    {project.year}
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+            {/* Projects Stack */}
+            <div className="flex flex-col gap-32">
+                {projects.map((project, index) => (
+                    <ProjectCard key={project.id} project={project} index={index} />
+                ))}
             </div>
         </section>
-    )
+    );
+}
+
+function ProjectCard({ project, index }: { project: any, index: number }) {
+    const cardRef = useRef<HTMLDivElement>(null);
+
+    const handleMouseEnter = () => {
+        if (cardRef.current) {
+            animate(cardRef.current, {
+                scale: 1.02,
+                duration: 400,
+                ease: 'outQuad'
+            });
+        }
+    };
+
+    const handleMouseLeave = () => {
+        if (cardRef.current) {
+            animate(cardRef.current, {
+                scale: 1,
+                duration: 400,
+                ease: 'outQuad'
+            });
+        }
+    };
+
+    return (
+        <RevealOnScroll delay={index * 200}>
+            <div
+                ref={cardRef}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                className="group relative grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center p-8 lg:p-12 rounded-3xl bg-glass border border-glass-border hover:border-accent-primary/30 transition-colors duration-500 overflow-hidden"
+            >
+                {/* Decorative Background Blob */}
+                <div
+                    className="absolute -right-20 -top-20 w-96 h-96 bg-accent-primary/10 rounded-full blur-3xl group-hover:bg-accent-primary/20 transition-all duration-700 pointer-events-none"
+                    style={{ backgroundColor: project.color, opacity: 0.1 }}
+                />
+
+                {/* Left Content: Info */}
+                <div className="space-y-8 relative z-10">
+                    <div className="flex items-baseline gap-4">
+                        <span className="font-mono text-accent-glow/60 text-sm">0{project.id}</span>
+                        <h3 className="text-3xl md:text-4xl font-display font-bold text-white leading-tight">
+                            {project.title}
+                        </h3>
+                    </div>
+
+                    <p className="text-white/60 text-lg leading-relaxed max-w-md">
+                        {project.description}
+                    </p>
+
+                    <div className="flex flex-wrap gap-2">
+                        {project.tech.map((t: string) => (
+                            <span key={t} className="px-3 py-1 text-xs font-mono text-accent-glow bg-accent-primary/10 rounded-full border border-accent-primary/20">
+                                {t}
+                            </span>
+                        ))}
+                    </div>
+
+                    <div className="flex items-center gap-6 pt-4">
+                        <button className="flex items-center gap-2 text-white font-medium group/btn hover:text-accent-primary transition-colors">
+                            <span>View Case Study</span>
+                            <ArrowUpRight className="w-4 h-4 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
+                        </button>
+                    </div>
+                </div>
+
+                {/* Right Content: Visual/Stats */}
+                <div className="relative h-full min-h-[300px] flex flex-col justify-between bg-black/20 rounded-2xl p-8 border border-white/5 group-hover:border-white/10 transition-colors">
+                    <div className="flex justify-between items-start">
+                        <div>
+                            <p className="text-xs font-mono text-white/40 uppercase tracking-widest mb-1">Company</p>
+                            <p className="text-white font-medium">{project.company}</p>
+                        </div>
+                        <div className="text-right">
+                            <p className="text-xs font-mono text-white/40 uppercase tracking-widest mb-1">Year</p>
+                            <p className="text-white font-medium">{project.year}</p>
+                        </div>
+                    </div>
+
+                    <div className="mt-auto">
+                        <p className="text-xs font-mono text-white/40 uppercase tracking-widest mb-2">Impact</p>
+                        <div className="text-4xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-white/50">
+                            {project.impact}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </RevealOnScroll>
+    );
 }

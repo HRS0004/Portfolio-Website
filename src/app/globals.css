@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,16 +6,21 @@
 
 @layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ffffff;
+    --background: #020402;
+    --foreground: #ecfccb;
+    --glass-border: rgba(57, 255, 20, 0.15);
+  }
+
+  html {
+    scroll-behavior: smooth;
   }
 
   body {
-    @apply bg-system-bg text-system-text font-sans selection:bg-accent-blue/30;
+    @apply bg-void text-mint font-sans antialiased selection:bg-acid selection:text-black;
     overflow-x: hidden;
   }
 
-  /* Noise texture overlay */
+  /* Digital Static Grain */
   body::before {
     content: '';
     position: fixed;
@@ -24,74 +29,36 @@
     width: 100%;
     height: 100%;
     pointer-events: none;
-    opacity: 0.03;
+    opacity: 0.07;
     z-index: 100;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   }
 }
 
-/* Subtle grid - very low contrast */
-.grid-texture {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 80px 80px;
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .glass-panel {
+    @apply bg-void-light/50 backdrop-blur-xl border border-acid/10 shadow-neon;
+  }
+
+  .text-shadow-neon {
+    text-shadow: 0 0 10px rgba(57, 255, 20, 0.5), 0 0 20px rgba(57, 255, 20, 0.3);
+  }
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
-::-webkit-scrollbar-track {
-  background: #0a0a0a;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.15);
-}
-
-/* Typography utilities */
-.text-display {
-  @apply font-display font-bold tracking-tight;
-}
-
-.text-body {
-  @apply font-sans font-normal;
-}
-
-/* Section padding */
-.section-container {
-  @apply max-w-7xl mx-auto px-6 lg:px-12;
-}
-
-/* Checkpoint-style label */
-.checkpoint-label {
-  @apply text-xs font-mono uppercase tracking-widest opacity-50;
-}
-
-/* System metric */
-.metric-display {
-  @apply font-display text-6xl lg:text-7xl font-bold tracking-tight;
-}
-
-/* Fade background behind content */
-.content-fade-bg::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at center, rgba(10, 10, 10, 0.8) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-/* Remove default transitions */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }

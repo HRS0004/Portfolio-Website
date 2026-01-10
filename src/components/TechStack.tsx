@@ -1,158 +1,50 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/dist/ScrollTrigger'
-
-const metrics = [
-    { value: 50, label: 'Load Time Reduction', unit: 'PERFORMANCE', suffix: '%' },
-    { value: 60, label: 'FPS 3D Rendering', unit: 'GRAPHICS', suffix: '' },
-    { value: 169, label: 'Projects Completed', unit: 'DELIVERY', suffix: '' },
-]
+import { useRef } from 'react'
+import RevealOnScroll from './ui/RevealOnScroll'
 
 const stack = [
-    'React', 'Next.js', 'TypeScript', 'Three.js', 'GLSL', 
-    'Tailwind CSS', 'GSAP', 'Framer Motion', 'WebGL'
+    { name: 'React', category: 'Frontend' },
+    { name: 'Next.js', category: 'Framework' },
+    { name: 'TypeScript', category: 'Language' },
+    { name: 'Three.js', category: '3D' },
+    { name: 'R3F', category: '3D' },
+    { name: 'WebGL', category: 'Core' },
+    { name: 'Tailwind', category: 'Style' },
+    { name: 'GSAP', category: 'Motion' },
+    { name: 'Framer Motion', category: 'Motion' },
+    { name: 'Node.js', category: 'Backend' },
+    { name: 'Python', category: 'Language' },
+    { name: 'TensorFlow', category: 'AI' }
 ]
 
 export default function TechStack() {
-    const sectionRef = useRef<HTMLElement>(null)
-    const headerRef = useRef<HTMLDivElement>(null)
-    const metricsRef = useRef<HTMLDivElement>(null)
-    const stackRef = useRef<HTMLDivElement>(null)
-
-    useEffect(() => {
-        gsap.registerPlugin(ScrollTrigger)
-
-        // Section header animation
-        gsap.fromTo(headerRef.current,
-            { opacity: 0, y: 30 },
-            {
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                ease: 'power2.out',
-                scrollTrigger: {
-                    trigger: headerRef.current,
-                    start: 'top 80%',
-                    once: true
-                }
-            }
-        )
-
-        // Metric cards stagger
-        const metricCards = metricsRef.current?.querySelectorAll('.metric-card')
-        if (metricCards) {
-            gsap.fromTo(metricCards,
-                { opacity: 0, y: 40, scale: 0.95 },
-                {
-                    opacity: 1,
-                    y: 0,
-                    scale: 1,
-                    duration: 0.8,
-                    stagger: 0.15,
-                    ease: 'power2.out',
-                    scrollTrigger: {
-                        trigger: metricsRef.current,
-                        start: 'top 75%',
-                        once: true
-                    },
-                    onComplete: function() {
-                        // Animate number count-up for each metric
-                        metricCards.forEach((card, index) => {
-                            const numberEl = card.querySelector('.metric-number')
-                            if (numberEl) {
-                                gsap.fromTo(numberEl,
-                                    { textContent: 0 },
-                                    {
-                                        textContent: metrics[index].value,
-                                        duration: 1.5,
-                                        ease: 'power2.out',
-                                        snap: { textContent: 1 },
-                                        delay: index * 0.1
-                                    }
-                                )
-                            }
-                        })
-                    }
-                }
-            )
-        }
-
-        // Stack pills stagger
-        gsap.fromTo(stackRef.current,
-            { opacity: 0, y: 20 },
-            {
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                ease: 'power2.out',
-                scrollTrigger: {
-                    trigger: stackRef.current,
-                    start: 'top 85%',
-                    once: true
-                }
-            }
-        )
-    }, [])
-
     return (
-        <section 
-            ref={sectionRef}
-            className="py-32 relative border-t border-system-border" 
-            data-testid="tech-stack-section"
-        >
-            <div className="absolute inset-0 grid-texture opacity-20"></div>
-            
-            <div className="section-container relative z-10">
-                {/* Section Header */}
-                <div ref={headerRef} style={{ opacity: 0 }}>
-                    <div className="checkpoint-label mb-4">
-                        TECHNICAL_CAPABILITIES
-                    </div>
-                    <h2 className="text-display-md mb-20">
-                        System Performance
-                    </h2>
-                </div>
+        <section id="stack" className="py-24 relative z-10">
+            <div className="max-w-7xl mx-auto px-6 lg:px-12">
 
-                {/* Metrics Grid - Cyan Accent */}
-                <div ref={metricsRef} className="grid md:grid-cols-3 gap-8 mb-32">
-                    {metrics.map((metric, index) => (
-                        <div
-                            key={index}
-                            className="metric-card p-8 border border-system-border bg-system-surface/30 hover:border-accent-cyan/50 hover:shadow-[0_0_30px_rgba(6,182,212,0.1)] hover:translate-y-[-4px] transition-all duration-500"
-                            style={{ opacity: 0 }}
-                            data-testid={`metric-${index}`}
-                        >
-                            <div className="checkpoint-label text-accent-cyan mb-4">
-                                {metric.unit}
+                <RevealOnScroll className="mb-16 text-center">
+                    <span className="text-accent-glow font-mono text-xs tracking-[0.3em] uppercase opacity-70">
+                        Arsenal
+                    </span>
+                    <h2 className="text-4xl md:text-5xl font-display font-bold text-white mt-4">
+                        Technologies
+                    </h2>
+                </RevealOnScroll>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    {stack.map((tech, i) => (
+                        <RevealOnScroll key={tech.name} delay={i * 50}>
+                            <div className="group relative glass-panel p-6 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-accent-primary/40 transition-all duration-300 hover:-translate-y-1 cursor-default">
+                                <span className="text-white font-medium text-lg group-hover:text-accent-primary transition-colors">{tech.name}</span>
+                                <span className="text-[10px] font-mono text-white/30 uppercase tracking-wider">{tech.category}</span>
+
+                                <div className="absolute inset-0 bg-accent-primary/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl pointer-events-none" />
                             </div>
-                            <div className="metric-display text-system-text mb-2">
-                                <span className="metric-number">0</span>{metric.suffix}
-                            </div>
-                            <div className="text-sm text-system-muted">
-                                {metric.label}
-                            </div>
-                        </div>
+                        </RevealOnScroll>
                     ))}
                 </div>
 
-                {/* Tech Stack - Minimal Pills */}
-                <div ref={stackRef} style={{ opacity: 0 }}>
-                    <div className="checkpoint-label mb-6">
-                        CORE_TECHNOLOGIES
-                    </div>
-                    <div className="flex flex-wrap gap-3">
-                        {stack.map((tech, index) => (
-                            <span
-                                key={index}
-                                className="px-4 py-2 text-sm font-mono border border-system-border text-system-muted hover:text-accent-cyan hover:border-accent-cyan/30 hover:translate-y-[-2px] transition-all duration-300 cursor-default"
-                            >
-                                {tech}
-                            </span>
-                        ))}
-                    </div>
-                </div>
             </div>
         </section>
     )
